@@ -1,25 +1,13 @@
 # coder-notebook
 
-> A Notebook App for Coder
+一款为程序员设计的笔记本.
 
-#### Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:9080
-npm run dev
-
-# build electron application for production
-npm run build
-
-# run unit & end-to-end tests
-npm test
-
-
-```
-
----
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[45a3e22](https://github.com/SimulatedGREG/electron-vue/tree/45a3e224e7bb8fc71909021ccfdcfec0f461f634) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+## TODO
+[ ] 支持自定义 PATH
+[ ] 支持导入 Quiver
+[ ] 支持一键部署到 hexo
+[ ] 支持一键部署到 jekyll
+[ ] 支持一键部署到 typecho
+[ ] 支持在线版本更新
+[ ] 支持主题
+[ ] 支持多语言

@@ -14,35 +14,35 @@ const { VueLoaderPlugin } = require("vue-loader");
 let webConfig = {
   devtool: "#cheap-module-eval-source-map",
   entry: {
-    web: path.join(__dirname, "../src/renderer/main.js")
+    web: path.join(__dirname, "../src/renderer/main.js"),
   },
   module: {
     rules: [
       {
         test: /\.scss$/,
-        use: ["vue-style-loader", "css-loader", "sass-loader"]
+        use: ["vue-style-loader", "css-loader", "sass-loader"],
       },
       {
         test: /\.sass$/,
-        use: ["vue-style-loader", "css-loader", "sass-loader?indentedSyntax"]
+        use: ["vue-style-loader", "css-loader", "sass-loader?indentedSyntax"],
       },
       {
         test: /\.less$/,
-        use: ["vue-style-loader", "css-loader", "less-loader"]
+        use: ["vue-style-loader", "css-loader", "less-loader"],
       },
       {
         test: /\.css$/,
-        use: ["vue-style-loader", "css-loader"]
+        use: ["vue-style-loader", "css-loader"],
       },
       {
         test: /\.html$/,
-        use: "vue-html-loader"
+        use: "vue-html-loader",
       },
       {
         test: /\.js$/,
         use: "babel-loader",
         include: [path.resolve(__dirname, "../src/renderer")],
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.vue$/,
@@ -53,10 +53,10 @@ let webConfig = {
             loaders: {
               sass: "vue-style-loader!css-loader!sass-loader?indentedSyntax=1",
               scss: "vue-style-loader!css-loader!sass-loader",
-              less: "vue-style-loader!css-loader!less-loader"
-            }
-          }
-        }
+              less: "vue-style-loader!css-loader!less-loader",
+            },
+          },
+        },
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -64,9 +64,9 @@ let webConfig = {
           loader: "url-loader",
           query: {
             limit: 10000,
-            name: "imgs/[name].[ext]"
-          }
-        }
+            name: "imgs/[name].[ext]",
+          },
+        },
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
@@ -74,11 +74,11 @@ let webConfig = {
           loader: "url-loader",
           query: {
             limit: 10000,
-            name: "fonts/[name].[ext]"
-          }
-        }
-      }
-    ]
+            name: "fonts/[name].[ext]",
+          },
+        },
+      },
+    ],
   },
   plugins: [
     new VueLoaderPlugin(),
@@ -93,36 +93,36 @@ let webConfig = {
           webpackConfig: compilation.options,
           htmlWebpackPlugin: {
             files: assets,
-            options: options
+            options: options,
           },
-          process
+          process,
         };
       },
       minify: {
         collapseWhitespace: true,
         removeAttributeQuotes: true,
-        removeComments: true
+        removeComments: true,
       },
-      nodeModules: false
+      nodeModules: false,
     }),
     new webpack.DefinePlugin({
-      "process.env.IS_WEB": "true"
+      "process.env.IS_WEB": "true",
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
   ],
   output: {
     filename: "[name].js",
-    path: path.join(__dirname, "../dist/web")
+    path: path.join(__dirname, "../dist/web"),
   },
   resolve: {
     alias: {
       "@": path.join(__dirname, "../src/renderer"),
-      vue$: "vue/dist/vue.esm.js"
+      vue$: "vue/dist/vue.esm.js",
     },
-    extensions: [".js", ".vue", ".json", ".css"]
+    extensions: [".js", ".vue", ".json", ".css"],
   },
-  target: "web"
+  target: "web",
 };
 
 /**
@@ -137,14 +137,14 @@ if (process.env.NODE_ENV === "production") {
       {
         from: path.join(__dirname, "../static"),
         to: path.join(__dirname, "../dist/web/static"),
-        ignore: [".*"]
-      }
+        ignore: [".*"],
+      },
     ]),
     new webpack.DefinePlugin({
-      "process.env.NODE_ENV": '"production"'
+      "process.env.NODE_ENV": '"production"',
     }),
     new webpack.LoaderOptionsPlugin({
-      minimize: true
+      minimize: true,
     })
   );
 }

@@ -1,0 +1,64 @@
+<template>
+  <div class="side">
+    <div class="side__hd">Coder's Notebook</div>
+    <div class="side__bd">
+      <notebooks />
+    </div>
+    <div class="side__ft">
+      <create-notebook />
+    </div>
+  </div>
+</template>
+
+<script>
+import notebooks from "./notebooks";
+import createNotebook from "./create-notebook";
+
+export default {
+  name: "left",
+  components: {
+    notebooks,
+    createNotebook,
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.side {
+  position: relative;
+  width: 200px;
+  height: 100%;
+  padding: 35px 0;
+
+  &__hd {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 35px;
+    border-bottom: 1px solid #dcdfe6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__bd {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  &__ft {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 35px;
+    border-top: 1px solid #dcdfe6;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+  }
+}
+</style>

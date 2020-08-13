@@ -26,10 +26,10 @@ function logStats(proc, data) {
     data
       .toString({
         colors: true,
-        chunks: false
+        chunks: false,
       })
       .split(/\r?\n/)
-      .forEach(line => {
+      .forEach((line) => {
         log += "  " + line + "\n";
       });
   } else {
@@ -48,17 +48,17 @@ function startRenderer() {
     const compiler = webpack(rendererConfig);
     hotMiddleware = webpackHotMiddleware(compiler, {
       log: false,
-      heartbeat: 2500
+      heartbeat: 2500,
     });
 
-    compiler.hooks.compilation.tap("compilation", compilation => {
+    compiler.hooks.compilation.tap("compilation", (compilation) => {
       compilation.hooks.htmlWebpackPluginAfterEmit.tapAsync("html-webpack-plugin-after-emit", (data, cb) => {
         hotMiddleware.publish({ action: "reload" });
         cb();
       });
     });
 
-    compiler.hooks.done.tap("done", stats => {
+    compiler.hooks.done.tap("done", (stats) => {
       logStats("Renderer", stats);
     });
 
@@ -70,7 +70,7 @@ function startRenderer() {
         ctx.middleware.waitUntilValid(() => {
           resolve();
         });
-      }
+      },
     });
 
     server.listen(9080);
@@ -125,10 +125,10 @@ function startElectron() {
 
   electronProcess = spawn(electron, args);
 
-  electronProcess.stdout.on("data", data => {
+  electronProcess.stdout.on("data", (data) => {
     electronLog(data, "blue");
   });
-  electronProcess.stderr.on("data", data => {
+  electronProcess.stderr.on("data", (data) => {
     electronLog(data, "red");
   });
 
@@ -140,7 +140,7 @@ function startElectron() {
 function electronLog(data, color) {
   let log = "";
   data = data.toString().split(/\r?\n/);
-  data.forEach(line => {
+  data.forEach((line) => {
     log += `  ${line}\n`;
   });
   if (/[0-9A-z]+/.test(log)) {
@@ -158,17 +158,17 @@ function greeting() {
   const cols = process.stdout.columns;
   let text = "";
 
-  if (cols > 104) text = "electron-vue";
-  else if (cols > 76) text = "electron-|vue";
+  if (cols > 104) text = "coder-notebook";
+  else if (cols > 76) text = "coder-notebook";
   else text = false;
 
   if (text) {
     say(text, {
       colors: ["yellow"],
       font: "simple3d",
-      space: false
+      space: false,
     });
-  } else console.log(chalk.yellow.bold("\n  electron-vue"));
+  } else console.log(chalk.yellow.bold("\n  coder-notebook"));
   console.log(chalk.blue("  getting ready...") + "\n");
 }
 
@@ -179,7 +179,7 @@ function init() {
     .then(() => {
       startElectron();
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
     });
 }

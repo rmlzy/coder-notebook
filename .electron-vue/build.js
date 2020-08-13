@@ -36,7 +36,7 @@ function build() {
   const tasks = ["main", "renderer"];
   const m = new Multispinner(tasks, {
     preText: "building",
-    postText: "process"
+    postText: "process",
   });
 
   let results = "";
@@ -49,11 +49,11 @@ function build() {
   });
 
   pack(mainConfig)
-    .then(result => {
+    .then((result) => {
       results += result + "\n\n";
       m.success("main");
     })
-    .catch(err => {
+    .catch((err) => {
       m.error("main");
       console.log(`\n  ${errorLog}failed to build main process`);
       console.error(`\n${err}\n`);
@@ -61,11 +61,11 @@ function build() {
     });
 
   pack(rendererConfig)
-    .then(result => {
+    .then((result) => {
       results += result + "\n\n";
       m.success("renderer");
     })
-    .catch(err => {
+    .catch((err) => {
       m.error("renderer");
       console.log(`\n  ${errorLog}failed to build renderer process`);
       console.error(`\n${err}\n`);
@@ -84,10 +84,10 @@ function pack(config) {
         stats
           .toString({
             chunks: false,
-            colors: true
+            colors: true,
           })
           .split(/\r?\n/)
-          .forEach(line => {
+          .forEach((line) => {
             err += `    ${line}\n`;
           });
 
@@ -96,7 +96,7 @@ function pack(config) {
         resolve(
           stats.toString({
             chunks: false,
-            colors: true
+            colors: true,
           })
         );
       }
@@ -113,7 +113,7 @@ function web() {
     console.log(
       stats.toString({
         chunks: false,
-        colors: true
+        colors: true,
       })
     );
 
@@ -133,7 +133,7 @@ function greeting() {
     say(text, {
       colors: ["yellow"],
       font: "simple3d",
-      space: false
+      space: false,
     });
   } else console.log(chalk.yellow.bold("\n  lets-build"));
   console.log();
