@@ -5,11 +5,11 @@
 </template>
 
 <script>
-  export default {
-    name: 'coder-notebook'
-  }
+export default {
+  name: "coder-notebook"
+};
 </script>
 
 <style>
-  /* CSS */
+/* CSS */
 </style>
