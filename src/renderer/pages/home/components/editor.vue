@@ -1,20 +1,42 @@
 <template>
   <div class="editor">
     <div class="editor__title">
-      <input type="text" v-model="title" />
+      <input type="text" v-model="title" :placeholder="$t('Untitled')" @blur="onTitleBlur" />
     </div>
     <div class="editor__bd" v-if="currentNote">
-      <div class="cell" v-for="(cell, index) in currentNote.cells" :key="index">
-        <ace-editor v-if="cell.type === 'markdown'" :id="'editor__' + index" mode="markdown" :value="cell.data" />
-        <ace-editor v-if="cell.type === 'code'" :id="'editor__' + index" :mode="cell.language" :value="cell.data" />
+      <div
+        v-for="(cell, index) in currentNote.cells"
+        :class="{ cell: true, active: currentCellIndex === index }"
+        :key="index"
+      >
+        <ace-editor
+          v-if="cell.type === 'markdown'"
+          :id="'editor__' + index"
+          mode="markdown"
+          :value="cell.data"
+          @focus="onFocus(index)"
+          @blur="onBlur"
+          @change="onChange($event, index)"
+        />
+        <ace-editor
+          v-if="cell.type === 'code'"
+          :id="'editor__' + index"
+          :mode="cell.language"
+          :value="cell.data"
+          @focus="onFocus(index)"
+          @blur="onBlur"
+          @change="onChange($event, index)"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import _ from "lodash";
 import { mapState } from "vuex";
 import aceEditor from "@/components/ace-editor";
+import { updateNoteTitle, updateNoteCells } from "@/helpers/util";
 
 export default {
   name: "editor",
@@ -24,12 +46,45 @@ export default {
   data() {
     return {
       title: "",
+      currentCellIndex: -1,
     };
   },
   computed: {
     ...mapState({
+      currentNotebookUuid: (state) => state.app.currentNotebookUuid,
+      currentNoteUuid: (state) => state.app.currentNoteUuid,
       currentNote: (state) => state.app.currentNote,
     }),
+  },
+  created() {
+    if (this.currentNote) {
+      this.title = this.currentNote.title;
+    }
+  },
+  methods: {
+    async onTitleBlur() {
+      await updateNoteTitle(this.currentNotebookUuid, this.currentNoteUuid, this.title);
+      await this.$store.dispatch("app/setNoteTitle", this.title);
+    },
+
+    onFocus(index) {
+      this.currentCellIndex = index;
+    },
+
+    onBlur() {
+      this.currentCellIndex = -1;
+    },
+
+    async onChange(val, editedIndex) {
+      const newCells = _.cloneDeep(this.currentNote.cells).map((cell, index) => {
+        if (index === editedIndex) {
+          cell.data = val;
+        }
+        return cell;
+      });
+      await updateNoteCells(this.currentNotebookUuid, this.currentNoteUuid, newCells);
+      await this.$store.dispatch("app/setNoteCells", newCells);
+    },
   },
 };
 </script>
@@ -62,9 +117,10 @@ export default {
 .cell {
   padding: 10px;
   border-radius: 4px;
+  border: 1px solid transparent;
 
   &.active {
-    border: 1px solid #dcdfe6;
+    border-color: #dcdfe6;
   }
 }
 </style>

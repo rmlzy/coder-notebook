@@ -1,0 +1,19 @@
+export default {
+  AppName: "猿笔记",
+
+  Ok: "确定",
+  Cancel: "取消",
+
+  Rename: "重命名",
+  Remove: "删除",
+
+  Notebooks: "文件夹",
+  Trash: "回收站",
+
+  Untitled: "无标题",
+  NoNotes: "空文件夹",
+  NoNoteSelected: "未选择文件",
+
+  CreateNotebook: "创建文件夹",
+  PleaseInputNotebookName: "请输入文件夹名称",
+};

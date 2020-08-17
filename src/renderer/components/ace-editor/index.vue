@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 import ace from "brace";
 
 // import all mode
@@ -223,17 +224,26 @@ export default {
       editor: null,
     };
   },
-  created() {
-    console.log("created");
-  },
   mounted() {
     this.editor = ace.edit(this.id);
-    this.editor.getSession().setMode(`ace/mode/${this.mode}`);
     this.editor.setTheme(`ace/theme/${this.theme}`);
-    this.editor.setOptions({ maxLines: Infinity });
+    this.editor.setOptions({ maxLines: Infinity, showPrintMargin: false });
+    this.editor.getSession().setMode(`ace/mode/${this.mode}`);
     this.editor.getSession().setUseWrapMode(true);
     this.editor.setValue(this.value);
     this.editor.clearSelection();
+    this.editor.on("focus", () => {
+      this.$emit("focus", null);
+    });
+    this.editor.on("blur", () => {
+      this.$emit("blur", null);
+    });
+    this.editor.on(
+      "change",
+      _.debounce(() => {
+        this.$emit("change", this.editor.getValue());
+      }, 500)
+    );
   },
 };
 </script>

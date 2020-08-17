@@ -2,11 +2,11 @@ import path from "path";
 import fs from "fs-extra";
 import { v4 as uuidv4 } from "uuid";
 import MarkdownIt from "markdown-it";
+import i18n from "@/i18n";
+import pkg from "../../../package.json";
 const electron = require("electron");
 
 const DATA_FOLDER = "CODER_NOTEBOOK";
-const NOTEBOOK_SUFFIX = ".qvnotebook";
-const NOTE_SUFFIX = ".qvnote";
 const md = new MarkdownIt({
   html: true,
   xhtmlOut: false,
@@ -16,14 +16,18 @@ const md = new MarkdownIt({
   quotes: "“”‘’",
 });
 
-export const uuid = uuidv4();
+export const uuid = uuidv4;
 
-export const getNotebookDirName = (notebookUuid) => `${notebookUuid}${NOTEBOOK_SUFFIX}`;
+export const md2html = (mdStr) => {
+  return md.render(mdStr);
+};
 
-export const getNoteDirName = (noteUuid) => `${noteUuid}${NOTE_SUFFIX}`;
+export const getDocumentPath = () => {
+  return electron.remote.app.getPath("documents");
+};
 
 export const getAppPathSync = () => {
-  const documentPath = electron.remote.app.getPath("documents");
+  const documentPath = getDocumentPath();
   const dataPath = `${documentPath}/${DATA_FOLDER}`;
   if (!isDir(dataPath)) {
     fs.ensureDir(dataPath);
@@ -49,15 +53,6 @@ export const isFile = (p) => {
   }
 };
 
-export const init = async () => {
-  const appPath = getAppPathSync();
-  fs.ensureDir(appPath);
-  const defaultConfig = {
-    name: "coder-notebook",
-  };
-  await fs.outputJson(path.join(appPath, "config.json"), defaultConfig);
-};
-
 export const ls = (p) => {
   return new Promise((resolve, reject) => {
     fs.readdir(p, (err, files) => {
@@ -68,6 +63,21 @@ export const ls = (p) => {
       resolve(files);
     });
   });
+};
+
+export const init = async () => {
+  const appPath = getAppPathSync();
+  const configPath = path.join(appPath, "config.json");
+  if (isFile(configPath)) {
+    return;
+  }
+  await fs.ensureDir(appPath);
+  await fs.outputJson(configPath, {
+    name: pkg.name,
+    version: pkg.version,
+  });
+  await createNotebook("Tutorial", "Tutorial");
+  await createNotebook("Trash", "Trash");
 };
 
 export const getNotebooks = async () => {
@@ -83,7 +93,7 @@ export const getNotebooks = async () => {
 
 export const getNotes = async (notebookUuid) => {
   const appPath = getAppPathSync();
-  const nbPath = path.join(appPath, getNotebookDirName(notebookUuid));
+  const nbPath = path.join(appPath, notebookUuid);
   const notePaths = (await ls(nbPath)).filter((p) => isFile(path.join(nbPath, p, "meta.json")));
   const noteMetas = [];
   for (let idx in notePaths) {
@@ -95,13 +105,70 @@ export const getNotes = async (notebookUuid) => {
 
 export const getNote = async (notebookUuid, noteUuid) => {
   const appPath = getAppPathSync();
-  const notePath = path.join(appPath, getNotebookDirName(notebookUuid), getNoteDirName(noteUuid));
-  const meta = await fs.readJson(path.join(notePath, "meta.json"));
-  const content = await fs.readJson(path.join(notePath, "content.json"));
+  const notePath = path.join(appPath, notebookUuid, noteUuid);
+  const metaJson = await fs.readJson(path.join(notePath, "meta.json"));
+  const contentJson = await fs.readJson(path.join(notePath, "content.json"));
   return {
-    ...meta,
-    cells: content.cells,
+    ...metaJson,
+    cells: contentJson.cells,
   };
 };
 
-export const md2html = (mdStr) => md.render(mdStr);
+export const createNotebook = async (name, _uuid) => {
+  const appPath = getAppPathSync();
+  const nbUuid = _uuid || uuid();
+  const nbPath = path.join(appPath, nbUuid);
+  await fs.ensureDir(nbPath);
+  await fs.outputJson(path.join(nbPath, "meta.json"), { name, uuid: nbUuid });
+  return nbUuid;
+};
+
+export const createNote = async (notebookUuid) => {
+  const appPath = getAppPathSync();
+  const noteUuid = uuid();
+  const metaPath = path.join(appPath, notebookUuid, noteUuid, "meta.json");
+  const contentPath = path.join(appPath, notebookUuid, noteUuid, "content.json");
+  const defaultTitle = "Untitled";
+  const ts = +new Date();
+  await fs.outputJson(metaPath, {
+    title: defaultTitle,
+    uuid: noteUuid,
+    tags: [],
+    created_at: ts,
+    updated_at: ts,
+  });
+  await fs.outputJson(contentPath, {
+    title: defaultTitle,
+    cells: [
+      {
+        type: "text",
+        data: "",
+      },
+    ],
+  });
+  return noteUuid;
+};
+
+export const updateNoteTitle = async (notebookUuid, noteUuid, noteTitle) => {
+  const appPath = getAppPathSync();
+
+  const metaPath = path.join(appPath, notebookUuid, noteUuid, "meta.json");
+  const meta = await fs.readJson(metaPath);
+  meta.title = noteTitle;
+  await fs.outputJson(metaPath, meta);
+
+  const contentPath = path.join(appPath, notebookUuid, noteUuid, "content.json");
+  const content = await fs.readJson(contentPath);
+  content.title = noteTitle;
+  await fs.outputJson(contentPath, content);
+};
+
+export const updateNoteCells = async (notebookUuid, noteUuid, noteCells) => {
+  const appPath = getAppPathSync();
+  const contentPath = path.join(appPath, notebookUuid, noteUuid, "content.json");
+  const content = await fs.readJson(contentPath);
+  content.title = noteCells;
+  await fs.outputJson(contentPath, content);
+};
+
+export const moveNotebookToTrash = async (uuid) => {};

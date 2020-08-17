@@ -1,50 +1,55 @@
 <template>
-  <div class="right" v-if="currentNote">
-    <div class="right__hd">
-      <el-button-group>
-        <el-button
-          class="mode__btn"
-          size="mini"
-          :type="mode === 'EDIT' ? 'primary' : 'default'"
-          @click="toggleMode('EDIT')"
-        >
-          <i class="el-icon-edit"></i>
-        </el-button>
-        <el-button
-          class="mode__btn"
-          size="mini"
-          :type="mode === 'PREVIEW' ? 'primary' : 'default'"
-          @click="toggleMode('PREVIEW')"
-        >
-          <i class="el-icon-view"></i>
-        </el-button>
-        <el-button
-          class="mode__btn"
-          size="mini"
-          :type="mode === 'MULTIPLE' ? 'primary' : 'default'"
-          @click="toggleMode('MULTIPLE')"
-        >
-          <i class="el-icon-c-scale-to-original"></i>
-        </el-button>
-      </el-button-group>
-    </div>
-    <div class="right__bd">
-      <template v-if="mode === 'MULTIPLE'">
-        <div style="width: 50%;">
+  <div class="right">
+    <template v-if="currentNote">
+      <div class="right__hd">
+        <a-button-group>
+          <a-button
+            class="mode__btn"
+            size="small"
+            :type="mode === 'EDIT' ? 'primary' : 'default'"
+            @click="toggleMode('EDIT')"
+          >
+            <a-icon type="edit" />
+          </a-button>
+          <a-button
+            class="mode__btn"
+            size="small"
+            :type="mode === 'PREVIEW' ? 'primary' : 'default'"
+            @click="toggleMode('PREVIEW')"
+          >
+            <a-icon type="eye" />
+          </a-button>
+          <a-button
+            class="mode__btn"
+            size="small"
+            :type="mode === 'MULTIPLE' ? 'primary' : 'default'"
+            @click="toggleMode('MULTIPLE')"
+          >
+            <a-icon type="read" />
+          </a-button>
+        </a-button-group>
+      </div>
+      <div class="right__bd">
+        <template v-if="mode === 'MULTIPLE'">
+          <div style="width: 50%;">
+            <editor />
+          </div>
+          <div style="width: 50%;">
+            <preview :title="currentNote.title" :html="html" />
+          </div>
+        </template>
+
+        <template v-if="mode === 'EDIT'">
           <editor />
-        </div>
-        <div style="width: 50%;">
+        </template>
+
+        <template v-if="mode === 'PREVIEW'">
           <preview :title="currentNote.title" :html="html" />
-        </div>
-      </template>
-
-      <template v-if="mode === 'EDIT'">
-        <editor />
-      </template>
-
-      <template v-if="mode === 'PREVIEW'">
-        <preview :title="currentNote.title" :html="html" />
-      </template>
+        </template>
+      </div>
+    </template>
+    <div v-else class="right__empty">
+      <p>{{ $t("NoNoteSelected") }}</p>
     </div>
   </div>
 </template>
@@ -125,6 +130,15 @@ export default {
     & > div {
       flex: 1;
     }
+  }
+
+  &__empty {
+    width: 100%;
+    height: 100%;
+    padding-bottom: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 

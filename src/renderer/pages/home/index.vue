@@ -13,10 +13,10 @@
 </template>
 
 <script>
+import { init, getNotebooks } from "@/helpers/util";
 import left from "./components/left";
 import middle from "./components/middle";
 import right from "./components/right";
-import { getNotebooks } from "@/helpers/util";
 
 export default {
   name: "home-index",
@@ -26,8 +26,8 @@ export default {
     right,
   },
   async mounted() {
-    const notebooks = await getNotebooks();
-    await this.$store.dispatch("app/setNotebooks", notebooks);
+    await init();
+    await this.$store.dispatch("app/refreshNotebooks");
   },
 };
 </script>
