@@ -5,6 +5,8 @@ export default {
   namespaced: true,
 
   state: {
+    config: {},
+
     pane: 3,
 
     currentNotebookUuid: "Inbox",
@@ -17,6 +19,9 @@ export default {
   },
 
   mutations: {
+    SET_CONFIG: (state, payload) => {
+      state.config = payload;
+    },
     SET_PANE: (state, payload) => {
       state.pane = payload;
     },
@@ -38,6 +43,10 @@ export default {
   },
 
   actions: {
+    setConfig({ commit }, config) {
+      commit("SET_CONFIG", config);
+    },
+
     setPane({ commit }, pane) {
       commit("SET_PANE", pane);
     },

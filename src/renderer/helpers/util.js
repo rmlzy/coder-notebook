@@ -74,10 +74,25 @@ export const init = async () => {
   await fs.outputJson(configPath, {
     name: pkg.name,
     version: pkg.version,
+    leftWidth: "200px",
+    middleWidth: "200px",
   });
   await createNotebook("Inbox", "Inbox");
   await createNotebook("Tutorial", "Tutorial");
   await createNotebook("Trash", "Trash");
+};
+
+export const getConfig = async () => {
+  const appPath = getAppPathSync();
+  const config = await fs.readJson(path.join(appPath, "config.json"));
+  return config;
+};
+
+export const setConfig = async (key, val) => {
+  const appPath = getAppPathSync();
+  const config = await getConfig();
+  config[key] = val;
+  await fs.outputJson(path.join(appPath, "config.json"), config);
 };
 
 export const getNotebooks = async () => {
