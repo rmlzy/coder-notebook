@@ -21,7 +21,7 @@ export default {
     font-weight: 500;
     margin: 20px 0;
     padding: 15px 10px;
-    border-bottom: 1px solid #dcdfe6;
+    border-bottom: 1px solid var(--border-color);
   }
 }
 </style>

@@ -56,6 +56,13 @@ export default {
       currentNote: (state) => state.app.currentNote,
     }),
   },
+  watch: {
+    currentNote(newVal) {
+      if (newVal) {
+        this.title = newVal.title;
+      }
+    },
+  },
   created() {
     if (this.currentNote) {
       this.title = this.currentNote.title;
@@ -98,7 +105,7 @@ export default {
     font-weight: 500;
     margin: 20px 0;
     padding: 15px 10px;
-    border-bottom: 1px solid #dcdfe6;
+    border-bottom: 1px solid var(--border-color);
 
     input {
       font-size: 18px;
@@ -120,7 +127,7 @@ export default {
   border: 1px solid transparent;
 
   &.active {
-    border-color: #dcdfe6;
+    border-color: var(--border-color);
   }
 }
 </style>

@@ -7,8 +7,18 @@ export default {
   Rename: "重命名",
   Remove: "删除",
 
-  Notebooks: "文件夹",
+  Library: "文档库",
+  Inbox: "存储箱",
   Trash: "回收站",
+
+  ShowInFinder: "在文件夹中打开",
+  EmptyTrash: "清空",
+
+  SinglePane: "单列",
+  TwoPane: "两列",
+  ThreePane: "三列",
+
+  Notebooks: "文件夹",
 
   Untitled: "无标题",
   NoNotes: "空文件夹",

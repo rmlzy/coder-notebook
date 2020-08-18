@@ -2,6 +2,29 @@
   <div class="right">
     <template v-if="currentNote">
       <div class="right__hd">
+        <a-dropdown key="Menu" :trigger="['click']">
+          <a-icon class="right__hd__menu" type="menu" />
+          <a-menu slot="overlay">
+            <a-menu-item>
+              <div class="pane" @click="onSetPane(1)">
+                <a-icon v-if="pane === 1" class="pane__icon" type="check" />
+                <div class="pane__name">{{ $t("SinglePane") }}</div>
+              </div>
+            </a-menu-item>
+            <a-menu-item>
+              <div class="pane" @click="onSetPane(2)">
+                <a-icon v-if="pane === 2" class="pane__icon" type="check" />
+                <div class="pane__name">{{ $t("TwoPane") }}</div>
+              </div>
+            </a-menu-item>
+            <a-menu-item>
+              <div class="pane" @click="onSetPane(3)">
+                <a-icon v-if="pane === 3" class="pane__icon" type="check" />
+                <div class="pane__name">{{ $t("ThreePane") }}</div>
+              </div>
+            </a-menu-item>
+          </a-menu>
+        </a-dropdown>
         <a-button-group>
           <a-button
             class="mode__btn"
@@ -74,6 +97,7 @@ export default {
   },
   computed: {
     ...mapState({
+      pane: (state) => state.app.pane,
       currentNote: (state) => state.app.currentNote,
     }),
     html() {
@@ -83,6 +107,10 @@ export default {
   methods: {
     toggleMode(mode) {
       this.mode = mode;
+    },
+
+    onSetPane(pane) {
+      this.$store.dispatch("app/setPane", pane);
     },
 
     cells2html(cells) {
@@ -114,10 +142,18 @@ export default {
     left: 0;
     width: 100%;
     height: 35px;
-    border-bottom: 1px solid #dcdfe6;
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
+
+    &__menu {
+      position: absolute;
+      top: 8px;
+      left: 10px;
+      font-size: 18px;
+      cursor: pointer;
+    }
   }
 
   &__bd {
@@ -126,6 +162,7 @@ export default {
     overflow-x: hidden;
     overflow-y: auto;
     display: flex;
+    background: var(--editor-bg);
 
     & > div {
       flex: 1;
@@ -153,9 +190,19 @@ export default {
   }
 }
 
-.border {
-  width: 1px;
+.pane {
+  position: relative;
   height: 100%;
-  background: #dcdfe6;
+  min-width: 80px;
+  padding: 0 20px;
+
+  &__icon {
+    position: absolute;
+    top: 4px;
+    left: 0;
+  }
+
+  &__name {
+  }
 }
 </style>

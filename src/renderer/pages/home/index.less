@@ -1,0 +1,31 @@
+.nb {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+  &-left {
+    position: relative;
+    width: 200px;
+    color: var(--left-color);
+    background: var(--left-bg);
+  }
+
+  &-middle {
+    position: relative;
+    width: 200px;
+    border-left: 1px solid var(--border-color);
+    color: var(--middle-color);
+    background: var(--middle-bg);
+  }
+
+  &-right {
+    flex: 1;
+    position: relative;
+    border-left: 1px solid var(--border-color);
+    color: var(--right-color);
+    background: var(--right-bg);
+  }
+}

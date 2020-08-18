@@ -21,6 +21,7 @@
 <script>
 import { mapState } from "vuex";
 import { formatTs } from "@/helpers/filters";
+import { moveNoteToTrash } from "@/helpers/util";
 
 export default {
   name: "notes",
@@ -30,6 +31,7 @@ export default {
   filters: { formatTs },
   computed: {
     ...mapState({
+      currentNotebookUuid: (state) => state.app.currentNotebookUuid,
       currentNoteUuid: (state) => state.app.currentNoteUuid,
       notes: (state) => state.app.notes,
     }),
@@ -40,7 +42,10 @@ export default {
       this.$store.dispatch("app/selectNote", noteUuid);
     },
 
-    onRemove(noteUuid) {},
+    async onRemove(noteUuid) {
+      await moveNoteToTrash(this.currentNotebookUuid, noteUuid);
+      await this.$store.dispatch("app/removeNote", noteUuid);
+    },
   },
 };
 </script>
@@ -52,23 +57,25 @@ export default {
   padding: 10px;
   user-select: none;
   cursor: pointer;
-  border-bottom: 1px solid #dcdfe6;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--note-color);
+  background: var(--note-bg);
 
   &:last-child {
     border-bottom: none;
   }
 
   &.active {
-    color: #fff;
-    background: #409eff;
+    color: var(--note-active-color);
+    background: var(--note-active-bg);
   }
 
-  &.ant-dropdown-open {
-    outline: 1px solid #409eff;
+  &:not(.active).ant-dropdown-open {
+    background: var(--note-hover-bg);
   }
 
   &__title {
-    font-size: 13px;
+    font-size: 14px;
     margin-bottom: 10px;
   }
 

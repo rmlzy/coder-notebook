@@ -2,6 +2,7 @@
   <div class="side">
     <div class="side__hd">Coder's Notebook</div>
     <div class="side__bd">
+      <libraries />
       <notebooks />
     </div>
     <div class="side__ft">
@@ -11,12 +12,14 @@
 </template>
 
 <script>
+import libraries from "./libraries";
 import notebooks from "./notebooks";
 import createNotebook from "./create-notebook";
 
 export default {
   name: "left",
   components: {
+    libraries,
     notebooks,
     createNotebook,
   },
@@ -36,7 +39,7 @@ export default {
     left: 0;
     width: 100%;
     height: 35px;
-    border-bottom: 1px solid #dcdfe6;
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -55,7 +58,7 @@ export default {
     left: 0;
     width: 100%;
     height: 35px;
-    border-top: 1px solid #dcdfe6;
+    border-top: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     padding: 0 10px;

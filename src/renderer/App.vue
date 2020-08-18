@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: "coder-notebook"
+  name: "coder-notebook",
 };
 </script>
 

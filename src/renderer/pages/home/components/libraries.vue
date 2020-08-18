@@ -1,25 +1,24 @@
 <template>
   <div class="notebooks">
-    <div class="notebooks__title">{{ $t("Notebooks") }}</div>
-    <a-dropdown
-      v-for="(item, index) in notebooks"
-      :key="index"
-      :trigger="['contextmenu']"
-      v-if="blackList.indexOf(item.uuid) === -1"
-    >
-      <div :class="{ notebook: true, active: item.uuid === currentNotebookUuid }" @click="selectNotebook(item.uuid)">
-        <template v-if="renameUuid === item.uuid">
-          <a-input size="small" v-model="item.name" />
-        </template>
-        <template v-else>
-          <a-icon type="book" />
-          <span>{{ item.name }}</span>
-        </template>
-      </div>
+    <div class="notebooks__title">{{ $t("Library") }}</div>
 
+    <a-dropdown key="Inbox" :trigger="['contextmenu']">
+      <div :class="{ notebook: true, active: currentNotebookUuid === 'Inbox' }" @click="selectNotebook('Inbox')">
+        <a-icon type="inbox" />
+        <span>{{ $t("Inbox") }}</span>
+      </div>
       <a-menu slot="overlay">
-        <a-menu-item key="rename" @click="onRename(item.uuid)">{{ $t("Rename") }}</a-menu-item>
-        <a-menu-item key="remove" @click="onRemove(item.uuid)">{{ $t("Remove") }}</a-menu-item>
+        <a-menu-item key="rename">{{ $t("ShowInFinder") }}</a-menu-item>
+      </a-menu>
+    </a-dropdown>
+
+    <a-dropdown key="Trash" :trigger="['contextmenu']">
+      <div :class="{ notebook: true, active: currentNotebookUuid === 'Trash' }" @click="selectNotebook('Trash')">
+        <a-icon type="delete" />
+        <span>{{ $t("Trash") }}</span>
+      </div>
+      <a-menu slot="overlay">
+        <a-menu-item key="rename">{{ $t("EmptyTrash") }}</a-menu-item>
       </a-menu>
     </a-dropdown>
   </div>
@@ -27,20 +26,12 @@
 
 <script>
 import { mapState } from "vuex";
-import { moveNotebookToTrash } from "@/helpers/util";
 
 export default {
-  name: "notebooks",
-  data() {
-    return {
-      renameUuid: "",
-      blackList: ["Inbox", "Trash"],
-    };
-  },
+  name: "libraries",
   computed: {
     ...mapState({
       currentNotebookUuid: (state) => state.app.currentNotebookUuid,
-      notebooks: (state) => state.app.notebooks,
     }),
   },
   methods: {
@@ -48,21 +39,11 @@ export default {
       if (notebookUuid === this.currentNotebookUuid) return;
       this.$store.dispatch("app/selectNotebook", notebookUuid);
     },
-
-    onRename(uuid) {
-      this.selectNotebook(uuid);
-      this.renameUuid = uuid;
-    },
-
-    async onRemove(uuid) {
-      await moveNotebookToTrash(uuid);
-      await this.$store.dispatch("app/removeNotebook");
-    },
   },
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .notebooks {
   margin-top: 10px;
   margin-bottom: 10px;

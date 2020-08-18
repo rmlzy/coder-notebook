@@ -5,7 +5,9 @@ export default {
   namespaced: true,
 
   state: {
-    currentNotebookUuid: "notebook_1",
+    pane: 3,
+
+    currentNotebookUuid: "Inbox",
     notebooks: [],
 
     currentNoteUuid: "",
@@ -15,6 +17,9 @@ export default {
   },
 
   mutations: {
+    SET_PANE: (state, payload) => {
+      state.pane = payload;
+    },
     SET_CURRENT_NOTEBOOK_UUID: (state, payload) => {
       state.currentNotebookUuid = payload;
     },
@@ -33,6 +38,10 @@ export default {
   },
 
   actions: {
+    setPane({ commit }, pane) {
+      commit("SET_PANE", pane);
+    },
+
     setNotebooks({ commit }, notebooks) {
       commit("SET_NOTEBOOKS", notebooks);
     },
@@ -44,7 +53,10 @@ export default {
         }
         return note;
       });
+      const newCurrentNote = _.cloneDeep(state.currentNote);
+      newCurrentNote.title = title;
       commit("SET_NOTES", newNotes);
+      commit("SET_CURRENT_NOTE", newCurrentNote);
     },
 
     setNoteCells({ state, commit }, cells) {
@@ -77,6 +89,26 @@ export default {
 
     async refreshNotes({ state, dispatch }) {
       dispatch("selectNotebook", state.currentNotebookUuid);
+    },
+
+    async removeNotebook({ state, commit, dispatch }, notebookUuid) {
+      if (state.currentNotebookUuid === notebookUuid) {
+        commit("SET_CURRENT_NOTEBOOK_UUID", "");
+        commit("SET_CURRENT_NOTE_UUID", "");
+        commit("SET_NOTES", []);
+        commit("SET_CURRENT_NOTE", null);
+        await dispatch("refreshNotebooks");
+      } else {
+        await dispatch("refreshNotebooks");
+      }
+    },
+
+    async removeNote({ state, commit, dispatch }, noteUuid) {
+      if (state.currentNoteUuid === noteUuid) {
+        commit("SET_CURRENT_NOTE_UUID", "");
+        commit("SET_CURRENT_NOTE", null);
+      }
+      await dispatch("refreshNotes");
     },
   },
 };

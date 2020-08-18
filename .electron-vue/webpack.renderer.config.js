@@ -39,7 +39,25 @@ let rendererConfig = {
       },
       {
         test: /\.less$/,
-        use: ["vue-style-loader", "css-loader", "less-loader"],
+        use: [
+          "vue-style-loader",
+          "css-loader",
+          {
+            loader: "less-loader",
+            options: {
+              lessOptions: {
+                // https://github.com/vueComponent/ant-design-vue/blob/master/components/style/themes/default.less
+                modifyVars: {
+                  "font-family": "inherit",
+                  "primary-color": "#4a4a4a",
+                  "border-radius-base": "0px",
+                  "wave-animation-width": "0px",
+                },
+                javascriptEnabled: true,
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.css$/,

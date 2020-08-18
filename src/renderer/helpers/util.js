@@ -76,6 +76,7 @@ export const init = async () => {
     name: pkg.name,
     version: pkg.version,
   });
+  await createNotebook("Inbox", "Inbox");
   await createNotebook("Tutorial", "Tutorial");
   await createNotebook("Trash", "Trash");
 };
@@ -141,7 +142,7 @@ export const createNote = async (notebookUuid) => {
     title: defaultTitle,
     cells: [
       {
-        type: "text",
+        type: "markdown",
         data: "",
       },
     ],
@@ -171,4 +172,25 @@ export const updateNoteCells = async (notebookUuid, noteUuid, noteCells) => {
   await fs.outputJson(contentPath, content);
 };
 
-export const moveNotebookToTrash = async (uuid) => {};
+export const moveNotebookToTrash = async (notebookUuid) => {
+  const appPath = getAppPathSync();
+  const nbPath = path.join(appPath, notebookUuid);
+  const notePaths = (await ls(nbPath)).filter((p) => isFile(path.join(nbPath, p, "meta.json")));
+  for (let i = 0; i < notePaths.length; i++) {
+    const sourceNotePath = path.join(appPath, notebookUuid, notePaths[i]);
+    const targetNotePath = path.join(appPath, "Trash", notePaths[i]);
+    await fs.move(sourceNotePath, targetNotePath);
+  }
+  await fs.remove(path.join(appPath, notebookUuid));
+};
+
+export const moveNoteToTrash = async (notebookUuid, noteUuid) => {
+  const appPath = getAppPathSync();
+  const sourceNotePath = path.join(appPath, notebookUuid, noteUuid);
+  const targetNotePath = path.join(appPath, "Trash", noteUuid);
+  if (notebookUuid === "Trash") {
+    await fs.remove(sourceNotePath);
+  } else {
+    await fs.move(sourceNotePath, targetNotePath);
+  }
+};

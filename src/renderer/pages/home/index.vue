@@ -1,9 +1,9 @@
 <template>
   <div class="nb">
-    <div class="nb-left">
+    <div class="nb-left" v-if="pane === 3">
       <left />
     </div>
-    <div class="nb-middle">
+    <div class="nb-middle" v-if="pane >= 2">
       <middle />
     </div>
     <div class="nb-right">
@@ -13,10 +13,11 @@
 </template>
 
 <script>
-import { init, getNotebooks } from "@/helpers/util";
+import { init } from "@/helpers/util";
 import left from "./components/left";
 import middle from "./components/middle";
 import right from "./components/right";
+import { mapState } from "vuex";
 
 export default {
   name: "home-index",
@@ -25,13 +26,18 @@ export default {
     middle,
     right,
   },
+  computed: {
+    ...mapState({
+      pane: (state) => state.app.pane,
+    }),
+  },
   async mounted() {
     await init();
-    await this.$store.dispatch("app/refreshNotebooks");
+    await this.$store.dispatch("app/selectNotebook", "Inbox");
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 @import "./index";
 </style>
