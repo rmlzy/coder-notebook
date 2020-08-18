@@ -1,4 +1,4 @@
-@import '~ant-design-vue/dist/antd.less';
+@import "~ant-design-vue/dist/antd.less";
 @import "./markdown";
 
 .theme-default {
@@ -26,6 +26,40 @@
   --note-hover-bg: #d4d4d4;
 
   --editor-bg: #fff;
+}
+
+.theme-dark {
+  --border-color: #202124;
+
+  --left-color: #f8f9fa;
+  --left-bg: #36363a;
+
+  --middle-color: #f8f9fa;
+  --middle-bg: #36363a;
+
+  --right-color: #f8f9fa;
+  --right-bg: #36363a;
+
+  --notebook-bg: transparent;
+  --notebook-active-bg: #f8f9fa;
+  --notebook-color: #f8f9fa;
+  --notebook-active-color: #36363a;
+  --notebook-hover-bg: rgba(255, 255, 255, 0.1);
+
+  --note-bg: transparent;
+  --note-active-bg: #f8f9fa;
+  --note-color: #f8f9fa;
+  --note-active-color: #36363a;
+  --note-hover-bg: rgba(255, 255, 255, 0.1);
+
+  --editor-bg: #36363a;
+
+  .ace-tomorrow-night {
+    background: transparent !important;
+    .ace_gutter {
+      background: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
 }
 
 body {
