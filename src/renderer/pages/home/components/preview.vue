@@ -14,7 +14,7 @@ export default {
 
 <style lang="scss" scoped>
 .preview {
-  padding: 0 20px;
+  padding: 35px 20px 0;
 
   &__title {
     font-size: 18px;

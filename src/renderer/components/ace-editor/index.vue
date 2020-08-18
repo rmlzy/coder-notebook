@@ -1,5 +1,5 @@
 <template>
-  <div class="ace-editor" :id="id"></div>
+  <div class="ace-editor" :id="id" :mode="mode"></div>
 </template>
 
 <script>
@@ -223,6 +223,11 @@ export default {
     return {
       editor: null,
     };
+  },
+  watch: {
+    mode(newVal) {
+      this.editor.getSession().setMode(`ace/mode/${newVal}`);
+    },
   },
   mounted() {
     this.editor = ace.edit(this.id);

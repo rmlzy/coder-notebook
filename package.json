@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "rmlzy <rmlzy@outlook.com>",
   "description": "A Notebook App for Coder",
-  "license": null,
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
@@ -62,6 +62,7 @@
     "lodash": "^4.17.19",
     "markdown-it": "^11.0.0",
     "uuid": "^8.3.0",
+    "v-click-outside": "^3.0.1",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-i18n": "^8.21.0",

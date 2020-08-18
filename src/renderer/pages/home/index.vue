@@ -33,6 +33,7 @@ export default {
   },
   async mounted() {
     await init();
+    await this.$store.dispatch("app/refreshNotebooks");
     await this.$store.dispatch("app/selectNotebook", "Inbox");
   },
 };

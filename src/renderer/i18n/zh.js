@@ -19,6 +19,8 @@ export default {
   ThreePane: "三列",
 
   Notebooks: "文件夹",
+  InsertBeforeCell: "上方插入",
+  InsertAfterCell: "下方插入",
 
   Untitled: "无标题",
   NoNotes: "空文件夹",

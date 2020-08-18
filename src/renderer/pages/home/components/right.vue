@@ -57,7 +57,7 @@
           <div style="width: 50%;">
             <editor />
           </div>
-          <div style="width: 50%;">
+          <div class="has-border" style="width: 50%;">
             <preview :title="currentNote.title" :html="html" />
           </div>
         </template>
@@ -188,6 +188,10 @@ export default {
     line-height: 23px;
     padding: 0;
   }
+}
+
+.has-border {
+  border-left: 1px solid var(--border-color);
 }
 
 .pane {

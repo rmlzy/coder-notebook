@@ -2,7 +2,6 @@ import path from "path";
 import fs from "fs-extra";
 import { v4 as uuidv4 } from "uuid";
 import MarkdownIt from "markdown-it";
-import i18n from "@/i18n";
 import pkg from "../../../package.json";
 const electron = require("electron");
 
@@ -142,6 +141,7 @@ export const createNote = async (notebookUuid) => {
     title: defaultTitle,
     cells: [
       {
+        uuid: uuid(),
         type: "markdown",
         data: "",
       },
@@ -156,6 +156,7 @@ export const updateNoteTitle = async (notebookUuid, noteUuid, noteTitle) => {
   const metaPath = path.join(appPath, notebookUuid, noteUuid, "meta.json");
   const meta = await fs.readJson(metaPath);
   meta.title = noteTitle;
+  meta.updated_at = +new Date();
   await fs.outputJson(metaPath, meta);
 
   const contentPath = path.join(appPath, notebookUuid, noteUuid, "content.json");
@@ -166,9 +167,15 @@ export const updateNoteTitle = async (notebookUuid, noteUuid, noteTitle) => {
 
 export const updateNoteCells = async (notebookUuid, noteUuid, noteCells) => {
   const appPath = getAppPathSync();
+
+  const metaPath = path.join(appPath, notebookUuid, noteUuid, "meta.json");
+  const meta = await fs.readJson(metaPath);
+  meta.updated_at = +new Date();
+  await fs.outputJson(metaPath, meta);
+
   const contentPath = path.join(appPath, notebookUuid, noteUuid, "content.json");
   const content = await fs.readJson(contentPath);
-  content.title = noteCells;
+  content.cells = noteCells;
   await fs.outputJson(contentPath, content);
 };
 
