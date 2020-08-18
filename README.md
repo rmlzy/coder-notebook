@@ -2,6 +2,8 @@
 
 一款为程序员设计的笔记本.
 
+![](./docs/preview1.jpg)
+
 ## TODO
 + [ ] 支持自定义 PATH
 + [ ] 支持导入 Quiver
