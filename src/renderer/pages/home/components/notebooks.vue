@@ -7,9 +7,19 @@
       :trigger="['contextmenu']"
       v-if="blackList.indexOf(item.uuid) === -1"
     >
-      <div :class="{ notebook: true, active: item.uuid === currentNotebookUuid }" @click="selectNotebook(item.uuid)">
+      <div
+        :class="{ notebook: true, active: item.uuid === currentNotebookUuid, hover: item.uuid === renameUuid }"
+        @click="selectNotebook(item.uuid)"
+      >
         <template v-if="renameUuid === item.uuid">
-          <a-input size="small" v-model="item.name" />
+          <a-input
+            size="small"
+            v-model="renameName"
+            autofocus
+            @pressEnter="onRenameOk"
+            @blur="onRenameOk"
+            @click="onRenameInputClick"
+          />
         </template>
         <template v-else>
           <a-icon type="book" />
@@ -18,7 +28,7 @@
       </div>
 
       <a-menu slot="overlay">
-        <a-menu-item key="rename" @click="onRename(item.uuid)">{{ $t("Rename") }}</a-menu-item>
+        <a-menu-item key="rename" @click="onRename(item.uuid, item.name)">{{ $t("Rename") }}</a-menu-item>
         <a-menu-item key="remove" @click="onRemove(item.uuid)">{{ $t("Remove") }}</a-menu-item>
       </a-menu>
     </a-dropdown>
@@ -27,13 +37,14 @@
 
 <script>
 import { mapState } from "vuex";
-import { moveNotebookToTrash } from "@/helpers/util";
+import { moveNotebookToTrash, updateNotebookName } from "@/helpers/util";
 
 export default {
   name: "notebooks",
   data() {
     return {
       renameUuid: "",
+      renameName: "",
       blackList: ["Inbox", "Trash"],
     };
   },
@@ -44,14 +55,26 @@ export default {
     }),
   },
   methods: {
+    onRenameInputClick(evt) {
+      evt.stopPropagation();
+    },
+
     selectNotebook(notebookUuid) {
       if (notebookUuid === this.currentNotebookUuid) return;
       this.$store.dispatch("app/selectNotebook", notebookUuid);
     },
 
-    onRename(uuid) {
-      this.selectNotebook(uuid);
+    onRename(uuid, name) {
       this.renameUuid = uuid;
+      this.renameName = name;
+    },
+
+    async onRenameOk() {
+      if (this.renameName === "") return;
+      await updateNotebookName(this.renameUuid, this.renameName);
+      await this.$store.dispatch("app/refreshNotebooks");
+      this.renameUuid = "";
+      this.renameName = "";
     },
 
     async onRemove(uuid) {
@@ -95,6 +118,10 @@ export default {
   }
 
   &:not(.active).ant-dropdown-open {
+    background: var(--notebook-hover-bg);
+  }
+
+  &.hover {
     background: var(--notebook-hover-bg);
   }
 

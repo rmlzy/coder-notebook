@@ -123,6 +123,14 @@ export const createNotebook = async (name, _uuid) => {
   return nbUuid;
 };
 
+export const updateNotebookName = async (notebookUuid, name) => {
+  const appPath = getAppPathSync();
+  const metaPath = path.join(appPath, notebookUuid, "meta.json");
+  const meta = await fs.readJson(metaPath);
+  meta.name = name;
+  await fs.outputJson(metaPath, meta);
+};
+
 export const createNote = async (notebookUuid) => {
   const appPath = getAppPathSync();
   const noteUuid = uuid();

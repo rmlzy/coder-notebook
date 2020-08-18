@@ -1,12 +1,5 @@
 <template>
-  <quill-editor
-    ref="qEditor"
-    v-model="data"
-    :options="options"
-    @focus="onFocus"
-    @blur="onBlur"
-    @change="onChange"
-  ></quill-editor>
+  <quill-editor ref="qEditor" v-model="data" :options="options" @focus="onFocus" @blur="onBlur" @change="onChange" />
 </template>
 
 <script>
@@ -43,7 +36,11 @@ export default {
     },
   },
   mounted() {
+    if (this.value) {
+      this.data = this.value;
+    }
     this.editor = this.$refs.qEditor.quill;
+    this.editor.blur();
   },
   methods: {
     onFocus() {

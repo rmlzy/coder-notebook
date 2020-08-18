@@ -37,7 +37,7 @@
         :key="cell.uuid"
         @click="onCellClick(cell.uuid)"
       >
-        <a-icon class="cell__drag" type="drag" />
+        <!-- <a-icon class="cell__drag" type="drag" />-->
         <div class="cell__before" @click="insertBeforeUuid($event, cell.uuid)">{{ $t("InsertBeforeCell") }}</div>
         <div class="cell__after" @click="insertAfterUuid($event, cell.uuid)">{{ $t("InsertAfterCell") }}</div>
         <ace-editor
