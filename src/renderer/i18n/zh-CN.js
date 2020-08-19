@@ -28,4 +28,10 @@ export default {
 
   CreateNotebook: "创建文件夹",
   PleaseInputNotebookName: "请输入文件夹名称",
+
+  Preference: "偏好设置",
+  ThemeConfig: "主题和外观",
+  Theme: "主题",
+  LightTheme: "日间",
+  DarkTheme: "夜间",
 };

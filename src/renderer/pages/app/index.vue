@@ -13,16 +13,20 @@
         <right />
       </div>
     </multipane>
+
+    <preference :visible="preferenceVisible" @cancel="closePreferenceModal" />
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { ipcRenderer } from "electron";
 import { Multipane, MultipaneResizer } from "vue-multipane";
 import { init, getConfig, setConfig } from "@/helpers/util";
 import left from "./components/left";
 import middle from "./components/middle";
 import right from "./components/right";
-import { mapState } from "vuex";
+import preference from "./components/preference";
 
 export default {
   name: "home-index",
@@ -30,8 +34,14 @@ export default {
     left,
     middle,
     right,
+    preference,
     Multipane,
     MultipaneResizer,
+  },
+  data() {
+    return {
+      preferenceVisible: false,
+    };
   },
   computed: {
     ...mapState({
@@ -45,6 +55,16 @@ export default {
     await this.$store.dispatch("app/setConfig", config);
     await this.$store.dispatch("app/refreshNotebooks");
     await this.$store.dispatch("app/selectNotebook", "Inbox");
+
+    ipcRenderer.on("click-menu-save", () => {
+      console.log("receive click menu save");
+    });
+
+    ipcRenderer.on("click-menu-preference", () => {
+      if (!this.preferenceVisible) {
+        this.preferenceVisible = true;
+      }
+    });
   },
   methods: {
     async onResizeStop(pane, container, size) {
@@ -54,6 +74,10 @@ export default {
       if (pane.id === "js_middle") {
         await setConfig("middleWidth", size);
       }
+    },
+
+    closePreferenceModal() {
+      this.preferenceVisible = false;
     },
   },
 };

@@ -7,12 +7,12 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "home-index",
-      component: require("@/pages/home/index").default
+      name: "app-index",
+      component: require("@/pages/app/index").default,
     },
     {
       path: "*",
-      redirect: "/"
-    }
-  ]
+      redirect: "/",
+    },
+  ],
 });
