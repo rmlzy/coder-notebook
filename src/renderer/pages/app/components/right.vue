@@ -1,75 +1,82 @@
 <template>
   <div class="right">
     <template v-if="currentNote">
-      <div class="right__hd">
-        <a-dropdown key="Menu" :trigger="['click']">
-          <a-icon class="right__hd__menu" type="menu" />
-          <a-menu slot="overlay">
-            <a-menu-item>
-              <div class="pane" @click="onSetPane(1)">
-                <a-icon v-if="pane === 1" class="pane__icon" type="check" />
-                <div class="pane__name">{{ $t("SinglePane") }}</div>
-              </div>
-            </a-menu-item>
-            <a-menu-item>
-              <div class="pane" @click="onSetPane(2)">
-                <a-icon v-if="pane === 2" class="pane__icon" type="check" />
-                <div class="pane__name">{{ $t("TwoPane") }}</div>
-              </div>
-            </a-menu-item>
-            <a-menu-item>
-              <div class="pane" @click="onSetPane(3)">
-                <a-icon v-if="pane === 3" class="pane__icon" type="check" />
-                <div class="pane__name">{{ $t("ThreePane") }}</div>
-              </div>
-            </a-menu-item>
-          </a-menu>
-        </a-dropdown>
-        <a-button-group>
-          <a-button
-            class="mode__btn"
-            size="small"
-            :type="mode === 'EDIT' ? 'primary' : 'default'"
-            @click="toggleMode('EDIT')"
-          >
-            <a-icon type="edit" />
-          </a-button>
-          <a-button
-            class="mode__btn"
-            size="small"
-            :type="mode === 'PREVIEW' ? 'primary' : 'default'"
-            @click="toggleMode('PREVIEW')"
-          >
-            <a-icon type="eye" />
-          </a-button>
-          <a-button
-            class="mode__btn"
-            size="small"
-            :type="mode === 'MULTIPLE' ? 'primary' : 'default'"
-            @click="toggleMode('MULTIPLE')"
-          >
-            <a-icon type="read" />
-          </a-button>
-        </a-button-group>
-      </div>
-      <div class="right__bd">
-        <template v-if="mode === 'MULTIPLE'">
-          <div style="width: 50%;">
-            <editor />
-          </div>
-          <div class="has-border" style="width: 50%;">
-            <preview :title="currentNote.title" :html="html" />
-          </div>
-        </template>
-
-        <template v-if="mode === 'EDIT'">
-          <editor />
-        </template>
-
-        <template v-if="mode === 'PREVIEW'">
+      <template v-if="currentNotebookUuid === 'Trash'">
+        <div class="right__bd">
           <preview :title="currentNote.title" :html="html" />
-        </template>
-      </div>
+        </div>
+      </template>
+      <template v-else>
+        <div class="right__hd">
+          <a-dropdown key="Menu" :trigger="['click']">
+            <a-icon class="right__hd__menu" type="menu" />
+            <a-menu slot="overlay">
+              <a-menu-item>
+                <div class="pane" @click="onSetPane(1)">
+                  <a-icon v-if="pane === 1" class="pane__icon" type="check" />
+                  <div class="pane__name">{{ $t("SinglePane") }}</div>
+                </div>
+              </a-menu-item>
+              <a-menu-item>
+                <div class="pane" @click="onSetPane(2)">
+                  <a-icon v-if="pane === 2" class="pane__icon" type="check" />
+                  <div class="pane__name">{{ $t("TwoPane") }}</div>
+                </div>
+              </a-menu-item>
+              <a-menu-item>
+                <div class="pane" @click="onSetPane(3)">
+                  <a-icon v-if="pane === 3" class="pane__icon" type="check" />
+                  <div class="pane__name">{{ $t("ThreePane") }}</div>
+                </div>
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown>
+          <a-button-group>
+            <a-button
+              class="mode__btn"
+              size="small"
+              :type="mode === 'EDIT' ? 'primary' : 'default'"
+              @click="toggleMode('EDIT')"
+            >
+              <a-icon type="edit" />
+            </a-button>
+            <a-button
+              class="mode__btn"
+              size="small"
+              :type="mode === 'PREVIEW' ? 'primary' : 'default'"
+              @click="toggleMode('PREVIEW')"
+            >
+              <a-icon type="eye" />
+            </a-button>
+            <a-button
+              class="mode__btn"
+              size="small"
+              :type="mode === 'MULTIPLE' ? 'primary' : 'default'"
+              @click="toggleMode('MULTIPLE')"
+            >
+              <a-icon type="read" />
+            </a-button>
+          </a-button-group>
+        </div>
+        <div class="right__bd">
+          <template v-if="mode === 'MULTIPLE'">
+            <div style="width: 50%;">
+              <editor />
+            </div>
+            <div class="has-border" style="width: 50%;">
+              <preview :title="currentNote.title" :html="html" />
+            </div>
+          </template>
+
+          <template v-if="mode === 'EDIT'">
+            <editor />
+          </template>
+
+          <template v-if="mode === 'PREVIEW'">
+            <preview :title="currentNote.title" :html="html" />
+          </template>
+        </div>
+      </template>
     </template>
     <div v-else class="right__empty">
       <p>{{ $t("NoNoteSelected") }}</p>
@@ -78,7 +85,6 @@
 </template>
 
 <script>
-import _ from "lodash";
 import { mapState } from "vuex";
 import { md2html } from "@/helpers/util";
 import editor from "./editor";
@@ -92,16 +98,17 @@ export default {
   },
   data() {
     return {
-      mode: "EDIT",
+      mode: "PREVIEW",
     };
   },
   computed: {
     ...mapState({
       pane: (state) => state.app.pane,
       currentNote: (state) => state.app.currentNote,
+      currentNotebookUuid: (state) => state.app.currentNotebookUuid,
     }),
     html() {
-      return this.cells2html(this.currentNote.cells);
+      return md2html(this.currentNote.content);
     },
   },
   methods: {
@@ -111,19 +118,6 @@ export default {
 
     onSetPane(pane) {
       this.$store.dispatch("app/setPane", pane);
-    },
-
-    cells2html(cells) {
-      if (!_.isArray(cells)) {
-        return "";
-      }
-      const htmlCells = cells.map((cell) => {
-        if (cell.type === "markdown") {
-          return md2html(cell.data);
-        }
-        return "";
-      });
-      return htmlCells.join("");
     },
   },
 };

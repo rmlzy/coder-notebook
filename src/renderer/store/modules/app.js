@@ -68,9 +68,9 @@ export default {
       commit("SET_CURRENT_NOTE", newCurrentNote);
     },
 
-    setNoteCells({ state, commit }, cells) {
+    setNoteContent({ state, commit }, content) {
       const note = _.cloneDeep(state.currentNote);
-      note.cells = cells;
+      note.content = content;
       commit("SET_CURRENT_NOTE", note);
     },
 

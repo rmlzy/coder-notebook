@@ -14,14 +14,15 @@ export default {
 
 <style lang="scss" scoped>
 .preview {
-  padding: 35px 20px 0;
+  padding: 0 30px;
+  word-break: break-all;
 
   &__title {
     font-size: 18px;
     font-weight: 500;
-    margin: 20px 0;
     padding: 15px 10px;
     border-bottom: 1px solid var(--border-color);
+    margin-bottom: 10px;
   }
 }
 </style>

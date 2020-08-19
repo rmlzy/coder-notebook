@@ -14,7 +14,7 @@ const i18n = locales[locale];
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
-    height: 700,
+    height: 800,
     minWidth: 800,
     minHeight: 520,
     useContentSize: true,
@@ -25,6 +25,15 @@ function createWindow() {
   });
 
   mainWindow.loadURL(winURL);
+
+  const handleRedirect = (e, url) => {
+    if (url !== mainWindow.webContents.getURL()) {
+      e.preventDefault();
+      shell.openExternal(url);
+    }
+  };
+  mainWindow.webContents.on("will-navigate", handleRedirect);
+  mainWindow.webContents.on("new-window", handleRedirect);
 
   const templates = [
     {

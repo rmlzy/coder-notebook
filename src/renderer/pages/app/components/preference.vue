@@ -1,32 +1,35 @@
 <template>
-  <a-modal
-    :visible="visible"
-    :title="$t('Preference')"
-    :bodyStyle="{ height: '400px' }"
-    width="600px"
-    top="5%"
-    @cancel="onCancel"
-    @ok="onOk"
-    :ok-text="$t('Ok')"
-    :cancel-text="$t('Cancel')"
-  >
+  <a-modal :visible="visible" :title="$t('Preference')" style="top: 5%;" width="400px" @cancel="onCancel">
     <a-form-model layout="vertical">
-      <a-tabs v-model="activeTab" tab-position="left">
-        <a-tab-pane key="theme" :tab="$t('ThemeConfig')">
-          <a-form-model-item :label="$t('Theme')">
-            <a-select v-model="config.theme">
-              <a-select-option v-for="theme in themeList" :key="theme.value" :value="theme.value">
-                {{ theme.label }}
-              </a-select-option>
-            </a-select>
-          </a-form-model-item>
-        </a-tab-pane>
-      </a-tabs>
+      <a-form-model-item :label="$t('Language')">
+        <a-select v-model="formData.language">
+          <a-select-option v-for="item in languageList" :key="item.value" :value="item.value">
+            {{ item.label }}
+          </a-select-option>
+        </a-select>
+      </a-form-model-item>
+      <a-form-model-item :label="$t('Theme')">
+        <a-select v-model="formData.theme">
+          <a-select-option v-for="item in themeList" :key="item.value" :value="item.value">
+            {{ item.label }}
+          </a-select-option>
+        </a-select>
+      </a-form-model-item>
     </a-form-model>
+
+    <template slot="footer">
+      <a-button key="back" @click="onCancel">{{ $t("Cancel") }}</a-button>
+      <a-button key="submit" type="primary" :disabled="!isChanged" @click="onOk">{{ $t("Apply") }}</a-button>
+    </template>
   </a-modal>
 </template>
 
 <script>
+import _ from "lodash";
+import { mapState } from "vuex";
+import i18n from "@/i18n";
+import { setFullConfig } from "@/helpers/util";
+
 export default {
   name: "setting",
   props: ["visible"],
@@ -37,12 +40,41 @@ export default {
         { label: this.$t("LightTheme"), value: "light" },
         { label: this.$t("DarkTheme"), value: "dark" },
       ],
-      config: {},
+      languageList: [
+        { label: "简体中文", value: "zh-CN" },
+        { label: "繁體中文", value: "zh-TW" },
+        { label: "English", value: "en-US" },
+        { label: "日本語", value: "ja" },
+        { label: "한국어", value: "ko" },
+      ],
+      formData: {},
     };
   },
+  computed: {
+    ...mapState({
+      config: (state) => state.app.config,
+    }),
+    isChanged() {
+      return JSON.stringify(this.config) !== JSON.stringify(this.formData);
+    },
+  },
+  watch: {
+    config(newVal) {
+      this.formData = _.cloneDeep(newVal);
+    },
+  },
   methods: {
-    onOk() {
-      this.$emit("ok", null);
+    async onOk() {
+      const { theme, language } = this.formData;
+      if (theme) {
+        document.body.setAttribute("class", `theme-${theme}`);
+      }
+      if (language) {
+        i18n.locale = language;
+      }
+      await this.$store.dispatch("app/setConfig", this.formData);
+      await setFullConfig(this.formData);
+      await this.$emit("ok", null);
     },
 
     onCancel() {

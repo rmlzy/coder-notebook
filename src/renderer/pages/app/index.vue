@@ -14,7 +14,7 @@
       </div>
     </multipane>
 
-    <preference :visible="preferenceVisible" @cancel="closePreferenceModal" />
+    <preference :visible="preferenceVisible" @cancel="closePreferenceModal" @ok="closePreferenceModal" />
   </div>
 </template>
 
@@ -23,6 +23,7 @@ import { mapState } from "vuex";
 import { ipcRenderer } from "electron";
 import { Multipane, MultipaneResizer } from "vue-multipane";
 import { init, getConfig, setConfig } from "@/helpers/util";
+import i18n from "@/i18n";
 import left from "./components/left";
 import middle from "./components/middle";
 import right from "./components/right";
@@ -40,7 +41,7 @@ export default {
   },
   data() {
     return {
-      preferenceVisible: false,
+      preferenceVisible: true,
     };
   },
   computed: {
@@ -52,6 +53,9 @@ export default {
   async mounted() {
     await init();
     const config = await getConfig();
+    if (config.language) {
+      i18n.locale = config.language;
+    }
     await this.$store.dispatch("app/setConfig", config);
     await this.$store.dispatch("app/refreshNotebooks");
     await this.$store.dispatch("app/selectNotebook", "Inbox");

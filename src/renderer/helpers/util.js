@@ -74,6 +74,8 @@ export const init = async () => {
   await fs.outputJson(configPath, {
     name: pkg.name,
     version: pkg.version,
+    theme: "light",
+    language: "zh-CN",
     leftWidth: "200px",
     middleWidth: "200px",
   });
@@ -92,6 +94,11 @@ export const setConfig = async (key, val) => {
   const appPath = getAppPathSync();
   const config = await getConfig();
   config[key] = val;
+  await fs.outputJson(path.join(appPath, "config.json"), config);
+};
+
+export const setFullConfig = async (config) => {
+  const appPath = getAppPathSync();
   await fs.outputJson(path.join(appPath, "config.json"), config);
 };
 
@@ -125,7 +132,7 @@ export const getNote = async (notebookUuid, noteUuid) => {
   const contentJson = await fs.readJson(path.join(notePath, "content.json"));
   return {
     ...metaJson,
-    cells: contentJson.cells,
+    content: contentJson.content,
   };
 };
 
@@ -162,13 +169,7 @@ export const createNote = async (notebookUuid) => {
   });
   await fs.outputJson(contentPath, {
     title: defaultTitle,
-    cells: [
-      {
-        uuid: uuid(),
-        type: "markdown",
-        data: "",
-      },
-    ],
+    content: "",
   });
   return noteUuid;
 };
@@ -188,7 +189,7 @@ export const updateNoteTitle = async (notebookUuid, noteUuid, noteTitle) => {
   await fs.outputJson(contentPath, content);
 };
 
-export const updateNoteCells = async (notebookUuid, noteUuid, noteCells) => {
+export const updateNoteContent = async (notebookUuid, noteUuid, noteContent) => {
   const appPath = getAppPathSync();
 
   const metaPath = path.join(appPath, notebookUuid, noteUuid, "meta.json");
@@ -198,7 +199,7 @@ export const updateNoteCells = async (notebookUuid, noteUuid, noteCells) => {
 
   const contentPath = path.join(appPath, notebookUuid, noteUuid, "content.json");
   const content = await fs.readJson(contentPath);
-  content.cells = noteCells;
+  content.content = noteContent;
   await fs.outputJson(contentPath, content);
 };
 
@@ -223,4 +224,10 @@ export const moveNoteToTrash = async (notebookUuid, noteUuid) => {
   } else {
     await fs.move(sourceNotePath, targetNotePath);
   }
+};
+
+export const clearTrash = async () => {
+  const appPath = getAppPathSync();
+  await fs.remove(path.join(appPath, "Trash"));
+  await createNotebook("Trash", "Trash");
 };

@@ -18,7 +18,7 @@
         <span>{{ $t("Trash") }}</span>
       </div>
       <a-menu slot="overlay">
-        <a-menu-item key="rename">{{ $t("EmptyTrash") }}</a-menu-item>
+        <a-menu-item key="clearTrash" @click="onClearTrash">{{ $t("ClearTrash") }}</a-menu-item>
       </a-menu>
     </a-dropdown>
   </div>
@@ -26,6 +26,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { clearTrash } from "@/helpers/util";
 
 export default {
   name: "libraries",
@@ -38,6 +39,11 @@ export default {
     selectNotebook(notebookUuid) {
       if (notebookUuid === this.currentNotebookUuid) return;
       this.$store.dispatch("app/selectNotebook", notebookUuid);
+    },
+
+    async onClearTrash() {
+      await clearTrash();
+      await this.$store.dispatch("app/refreshNotes");
     },
   },
 };
