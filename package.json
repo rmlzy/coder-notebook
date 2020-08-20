@@ -7,7 +7,7 @@
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
-    "build:dir": "node .electron-vue/build.js && electron-builder --dir",
+    "build:dir": "node .electron-vue/build.js && electron-builder -mwl",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
     "dev": "node .electron-vue/dev-runner.js",
@@ -20,7 +20,7 @@
     "postinstall": ""
   },
   "build": {
-    "productName": "coder-notebook",
+    "productName": "Coder's Notebook",
     "appId": "com.example.coder-notebook",
     "directories": {
       "output": "build"
@@ -44,13 +44,16 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "icon": "build/icons/icon.icns",
+      "target": ["dmg"]
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/icon.ico",
+      "target": ["portable"]
     },
     "linux": {
-      "icon": "build/icons"
+      "icon": "build/icons",
+      "target": ["AppImage"]
     }
   },
   "dependencies": {
