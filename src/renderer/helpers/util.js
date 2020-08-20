@@ -14,11 +14,15 @@ const md = new MarkdownIt({
   typographer: true,
   quotes: "“”‘’",
 });
+md.validateLink = () => true;
 
 export const uuid = uuidv4;
 
-export const md2html = (mdStr) => {
-  return md.render(mdStr);
+export const md2html = (notebookUuid, noteUuid, mdText) => {
+  const appPath = getAppPathSync();
+  const resourcePath = `file://${appPath}/${notebookUuid}/${noteUuid}/resources`;
+  mdText = mdText.replace(new RegExp("./resources", "g"), resourcePath);
+  return md.render(mdText);
 };
 
 export const getDocumentPath = () => {
@@ -230,4 +234,26 @@ export const clearTrash = async () => {
   const appPath = getAppPathSync();
   await fs.remove(path.join(appPath, "Trash"));
   await createNotebook("Trash", "Trash");
+};
+
+export const saveImage = async (notebookUuid, noteUuid, imgBlob) => {
+  const appPath = getAppPathSync();
+  const imgUuid = uuid();
+  const resourcePath = path.join(appPath, notebookUuid, noteUuid, "resources");
+  const imgPath = path.join(resourcePath, `${imgUuid}.jpg`);
+  await fs.ensureDir(resourcePath);
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(imgBlob);
+    reader.onload = (event) => {
+      const base64 = event.target.result;
+      const file = base64.replace(/^data:image\/\w+;base64,/, "");
+      try {
+        fs.writeFileSync(imgPath, file, { encoding: "base64" });
+        resolve(`./resources/${imgUuid}.jpg`);
+      } catch (e) {
+        reject(e);
+      }
+    };
+  });
 };

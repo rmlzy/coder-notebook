@@ -11,20 +11,20 @@
           <a-dropdown key="Menu" :trigger="['click']">
             <a-icon class="right__hd__menu" type="menu" />
             <a-menu slot="overlay">
-              <a-menu-item>
-                <div class="pane" @click="onSetPane(1)">
+              <a-menu-item @click="onSetPane(1)">
+                <div class="pane">
                   <a-icon v-if="pane === 1" class="pane__icon" type="check" />
                   <div class="pane__name">{{ $t("SinglePane") }}</div>
                 </div>
               </a-menu-item>
-              <a-menu-item>
-                <div class="pane" @click="onSetPane(2)">
+              <a-menu-item @click="onSetPane(2)">
+                <div class="pane">
                   <a-icon v-if="pane === 2" class="pane__icon" type="check" />
                   <div class="pane__name">{{ $t("TwoPane") }}</div>
                 </div>
               </a-menu-item>
-              <a-menu-item>
-                <div class="pane" @click="onSetPane(3)">
+              <a-menu-item @click="onSetPane(3)">
+                <div class="pane">
                   <a-icon v-if="pane === 3" class="pane__icon" type="check" />
                   <div class="pane__name">{{ $t("ThreePane") }}</div>
                 </div>
@@ -106,9 +106,11 @@ export default {
       pane: (state) => state.app.pane,
       currentNote: (state) => state.app.currentNote,
       currentNotebookUuid: (state) => state.app.currentNotebookUuid,
+      currentNoteUuid: (state) => state.app.currentNoteUuid,
     }),
     html() {
-      return md2html(this.currentNote.content);
+      console.log(md2html(this.currentNotebookUuid, this.currentNoteUuid, this.currentNote.content));
+      return md2html(this.currentNotebookUuid, this.currentNoteUuid, this.currentNote.content);
     },
   },
   methods: {

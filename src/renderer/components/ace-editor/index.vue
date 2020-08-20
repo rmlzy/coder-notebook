@@ -7,6 +7,8 @@
 <script>
 import _ from "lodash";
 import ace from "brace";
+import { mapState } from "vuex";
+import { saveImage } from "@/helpers/util";
 
 // import all mode
 import "brace/mode/markdown";
@@ -65,7 +67,14 @@ export default {
   data() {
     return {
       editor: null,
+      isFocus: false,
     };
+  },
+  computed: {
+    ...mapState({
+      currentNotebookUuid: (state) => state.app.currentNotebookUuid,
+      currentNoteUuid: (state) => state.app.currentNoteUuid,
+    }),
   },
   watch: {
     theme(newVal) {
@@ -88,9 +97,11 @@ export default {
     this.editor.getSession().setUseWrapMode(true);
     this.editor.clearSelection();
     this.editor.on("focus", () => {
+      this.isFocus = true;
       this.$emit("focus", null);
     });
     this.editor.on("blur", () => {
+      this.isFocus = false;
       this.$emit("blur", null);
     });
     this.editor.on(
@@ -99,6 +110,10 @@ export default {
         this.$emit("change", this.editor.getValue());
       }, 500)
     );
+    window.addEventListener("paste", this.onPaste, false);
+  },
+  destroyed() {
+    window.removeEventListener("paste", this.onPaste);
   },
   methods: {
     getAceTheme(appTheme) {
@@ -113,6 +128,31 @@ export default {
 
     setFocus() {
       this.editor.focus();
+    },
+
+    async onPaste(evt) {
+      if (!this.isFocus) {
+        return;
+      }
+      if (!evt.clipboardData) {
+        return;
+      }
+      const items = evt.clipboardData.items;
+      if (!items) {
+        return;
+      }
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") === -1) {
+          continue;
+        }
+        try {
+          const blob = items[i].getAsFile();
+          const imgUrl = await saveImage(this.currentNotebookUuid, this.currentNoteUuid, blob);
+          this.editor.insert(`\n![](${imgUrl})\n`);
+        } catch (e) {
+          break;
+        }
+      }
     },
   },
 };
