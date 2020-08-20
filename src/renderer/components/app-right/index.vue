@@ -87,8 +87,8 @@
 <script>
 import { mapState } from "vuex";
 import { md2html } from "@/helpers/util";
-import editor from "./editor";
-import preview from "./preview";
+import editor from "../editor";
+import preview from "../preview";
 
 export default {
   name: "right",

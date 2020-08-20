@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import libraries from "./libraries";
-import notebooks from "./notebooks";
-import createNotebook from "./create-notebook";
+import libraries from "../libraries";
+import notebooks from "../notebooks";
+import createNotebook from "../create-notebook";
 
 export default {
   name: "left",

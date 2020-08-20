@@ -16,9 +16,9 @@
 </template>
 
 <script>
-import { createNote } from "@/helpers/util";
-import notes from "./notes";
 import { mapState } from "vuex";
+import { createNote } from "@/helpers/util";
+import notes from "../notes";
 
 export default {
   name: "middle",
