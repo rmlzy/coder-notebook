@@ -24,4 +24,8 @@ export default {
   LightTheme: "日间",
   DarkTheme: "夜间",
   Language: "语言设置",
+  DataPath: "文档路径",
+  Open: "打开",
+  AppName: "软件名称",
+  BackgroundImage: "背景图",
 };

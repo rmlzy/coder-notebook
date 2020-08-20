@@ -52,6 +52,7 @@ let rendererConfig = {
                   "primary-color": "#4a4a4a",
                   "border-radius-base": "0px",
                   "wave-animation-width": "0px",
+                  "component-background": "#eaecef",
                 },
                 javascriptEnabled: true,
               },

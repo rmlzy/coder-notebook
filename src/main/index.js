@@ -26,15 +26,6 @@ function createWindow() {
 
   mainWindow.loadURL(winURL);
 
-  const handleRedirect = (e, url) => {
-    if (url !== mainWindow.webContents.getURL()) {
-      e.preventDefault();
-      shell.openExternal(url);
-    }
-  };
-  mainWindow.webContents.on("will-navigate", handleRedirect);
-  mainWindow.webContents.on("new-window", handleRedirect);
-
   const templates = [
     {
       label: i18n.Edit,

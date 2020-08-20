@@ -1,5 +1,5 @@
 <template>
-  <div class="nb">
+  <div v-if="config.version" :class="{ nb: true, 'has-bg': config.bg, [config.bg]: config.bg }">
     <multipane style="width: 100%;" @paneResizeStop="onResizeStop">
       <div id="js_left" class="nb-left" :style="{ width: config.leftWidth }" v-if="pane === 3">
         <app-left />
@@ -20,7 +20,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { ipcRenderer } from "electron";
+import { ipcRenderer, shell } from "electron";
 import { Multipane, MultipaneResizer } from "vue-multipane";
 import { init, getConfig, setConfig } from "@/helpers/util";
 import i18n from "@/i18n";
@@ -50,11 +50,19 @@ export default {
       pane: (state) => state.app.pane,
     }),
   },
-  async mounted() {
+  async created() {
     await init();
+  },
+  async mounted() {
     const config = await getConfig();
     if (config.language) {
       i18n.locale = config.language;
+    }
+    if (config.name) {
+      document.title = config.name;
+    }
+    if (config.theme) {
+      document.body.setAttribute("class", `theme-${config.theme}`);
     }
     await this.$store.dispatch("app/setConfig", config);
     await this.$store.dispatch("app/refreshNotebooks");
@@ -67,6 +75,14 @@ export default {
     ipcRenderer.on("click-menu-preference", () => {
       if (!this.preferenceVisible) {
         this.preferenceVisible = true;
+      }
+    });
+
+    // 在默认浏览器中打开链接
+    document.addEventListener("click", (event) => {
+      if (event.target.tagName === "A" && event.target.href.startsWith("http")) {
+        event.preventDefault();
+        shell.openExternal(event.target.href);
       }
     });
   },
@@ -88,39 +104,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.nb {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-
-  &-left {
-    position: relative;
-    width: 200px;
-    min-width: 200px;
-    max-width: 300px;
-    color: var(--left-color);
-    background: var(--left-bg);
-  }
-
-  &-middle {
-    position: relative;
-    width: 200px;
-    min-width: 200px;
-    max-width: 300px;
-    border-left: 1px solid var(--border-color);
-    color: var(--middle-color);
-    background: var(--middle-bg);
-  }
-
-  &-right {
-    flex: 1;
-    position: relative;
-    border-left: 1px solid var(--border-color);
-    color: var(--right-color);
-    background: var(--right-bg);
-  }
-}
+@import "./index";
 </style>

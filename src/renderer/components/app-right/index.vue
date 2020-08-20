@@ -109,7 +109,6 @@ export default {
       currentNoteUuid: (state) => state.app.currentNoteUuid,
     }),
     html() {
-      console.log(md2html(this.currentNotebookUuid, this.currentNoteUuid, this.currentNote.content));
       return md2html(this.currentNotebookUuid, this.currentNoteUuid, this.currentNote.content);
     },
   },
@@ -150,6 +149,10 @@ export default {
       font-size: 18px;
       cursor: pointer;
     }
+
+    .ant-btn {
+      border: none !important;
+    }
   }
 
   &__bd {
@@ -158,7 +161,6 @@ export default {
     overflow-x: hidden;
     overflow-y: auto;
     display: flex;
-    background: var(--editor-bg);
 
     & > div {
       flex: 1;

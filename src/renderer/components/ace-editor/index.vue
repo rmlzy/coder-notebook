@@ -138,6 +138,7 @@ export default {
         return;
       }
       const items = evt.clipboardData.items;
+      // TODO: 监听文件拷贝
       if (!items) {
         return;
       }

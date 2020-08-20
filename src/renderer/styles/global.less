@@ -2,6 +2,7 @@
 @import "./markdown";
 
 .theme-light {
+  --color: #202124;
   --border-color: #d4d4d4;
 
   --left-color: #4a4a4a;
@@ -26,40 +27,41 @@
   --note-hover-bg: #d4d4d4;
 
   --editor-bg: #fff;
+
+  a {
+    color: #d73a49;
+  }
 }
 
 .theme-dark {
+  --color: #c5c8c6;
   --border-color: #202124;
 
-  --left-color: #f8f9fa;
+  --left-color: #c5c8c6;
   --left-bg: #36363a;
 
-  --middle-color: #f8f9fa;
+  --middle-color: #c5c8c6;
   --middle-bg: #36363a;
 
-  --right-color: #f8f9fa;
+  --right-color: #c5c8c6;
   --right-bg: #36363a;
 
   --notebook-bg: transparent;
-  --notebook-active-bg: #f8f9fa;
-  --notebook-color: #f8f9fa;
-  --notebook-active-color: #36363a;
+  --notebook-active-bg: rgba(255, 255, 255, 0.1);
+  --notebook-color: #c5c8c6;
+  --notebook-active-color: #ffffff;
   --notebook-hover-bg: rgba(255, 255, 255, 0.1);
 
   --note-bg: transparent;
-  --note-active-bg: #f8f9fa;
-  --note-color: #f8f9fa;
-  --note-active-color: #36363a;
+  --note-active-bg: rgba(255, 255, 255, 0.1);
+  --note-color: #c5c8c6;
+  --note-active-color: #ffffff;
   --note-hover-bg: rgba(255, 255, 255, 0.1);
 
   --editor-bg: #36363a;
 
-  .ace-tomorrow-night {
-    background: transparent !important;
-
-    .ace_gutter {
-      background: rgba(255, 255, 255, 0.1) !important;
-    }
+  a {
+    color: #b5bd68;
   }
 }
 
@@ -72,10 +74,18 @@ body {
   box-sizing: border-box;
 }
 
+.ant-input-group-addon {
+  background: transparent;
+}
+
 .ellipsis {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.ace_editor {
+  background: transparent !important;
 }
 
 .ace_hidden-cursors {

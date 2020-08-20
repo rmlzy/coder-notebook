@@ -1,11 +1,10 @@
 import path from "path";
 import fs from "fs-extra";
+import { shell, remote } from "electron";
 import { v4 as uuidv4 } from "uuid";
 import MarkdownIt from "markdown-it";
 import pkg from "../../../package.json";
-const electron = require("electron");
 
-const DATA_FOLDER = "CODER_NOTEBOOK";
 const md = new MarkdownIt({
   html: true,
   xhtmlOut: false,
@@ -18,6 +17,10 @@ md.validateLink = () => true;
 
 export const uuid = uuidv4;
 
+export const showInFinder = (p) => {
+  shell.showItemInFolder(p);
+};
+
 export const md2html = (notebookUuid, noteUuid, mdText) => {
   const appPath = getAppPathSync();
   const resourcePath = `file://${appPath}/${notebookUuid}/${noteUuid}/resources`;
@@ -25,13 +28,15 @@ export const md2html = (notebookUuid, noteUuid, mdText) => {
   return md.render(mdText);
 };
 
-export const getDocumentPath = () => {
-  return electron.remote.app.getPath("documents");
+export const getConfigPathSync = () => {
+  const docPath = remote.app.getPath("documents");
+  return path.join(docPath, ".coder-notebook-config.json");
 };
 
 export const getAppPathSync = () => {
-  const documentPath = getDocumentPath();
-  const dataPath = `${documentPath}/${DATA_FOLDER}`;
+  const configPath = getConfigPathSync();
+  const config = fs.readJsonSync(configPath);
+  const dataPath = config.dataPath;
   if (!isDir(dataPath)) {
     fs.ensureDir(dataPath);
   }
@@ -69,41 +74,49 @@ export const ls = (p) => {
 };
 
 export const init = async () => {
-  const appPath = getAppPathSync();
-  const configPath = path.join(appPath, "config.json");
+  const docPath = remote.app.getPath("documents");
+  const configPath = getConfigPathSync();
   if (isFile(configPath)) {
     return;
   }
-  await fs.ensureDir(appPath);
   await fs.outputJson(configPath, {
     name: pkg.name,
     version: pkg.version,
+    dataPath: `${docPath}/CODER_NOTEBOOK`,
+    bg: "light-bg1",
     theme: "light",
     language: "zh-CN",
     leftWidth: "200px",
     middleWidth: "200px",
   });
+  const appPath = getAppPathSync();
+  await fs.ensureDir(appPath);
   await createNotebook("Inbox", "Inbox");
   await createNotebook("Tutorial", "Tutorial");
   await createNotebook("Trash", "Trash");
 };
 
 export const getConfig = async () => {
-  const appPath = getAppPathSync();
-  const config = await fs.readJson(path.join(appPath, "config.json"));
+  const configPath = getConfigPathSync();
+  const config = await fs.readJson(configPath);
   return config;
 };
 
 export const setConfig = async (key, val) => {
-  const appPath = getAppPathSync();
+  const configPath = getConfigPathSync();
   const config = await getConfig();
   config[key] = val;
-  await fs.outputJson(path.join(appPath, "config.json"), config);
+  await fs.outputJson(configPath, config);
 };
 
 export const setFullConfig = async (config) => {
+  const configPath = getConfigPathSync();
+  await fs.outputJson(configPath, config);
+};
+
+export const moveDataFolder = async (targetPath) => {
   const appPath = getAppPathSync();
-  await fs.outputJson(path.join(appPath, "config.json"), config);
+  await fs.move(appPath, targetPath);
 };
 
 export const getNotebooks = async () => {

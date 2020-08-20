@@ -1,6 +1,6 @@
 <template>
   <div class="side">
-    <div class="side__hd">Coder's Notebook</div>
+    <div class="side__hd">{{ config.name }}</div>
     <div class="side__bd">
       <libraries />
       <notebooks />
@@ -15,6 +15,7 @@
 import libraries from "../libraries";
 import notebooks from "../notebooks";
 import createNotebook from "../create-notebook";
+import { mapState } from "vuex";
 
 export default {
   name: "left",
@@ -22,6 +23,11 @@ export default {
     libraries,
     notebooks,
     createNotebook,
+  },
+  computed: {
+    ...mapState({
+      config: (state) => state.app.config,
+    }),
   },
 };
 </script>
@@ -43,6 +49,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 14px;
   }
 
   &__bd {
