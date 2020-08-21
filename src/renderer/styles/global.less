@@ -326,3 +326,21 @@ body {
 .ace_hidden-cursors {
   opacity: 0;
 }
+
+.is-run-code {
+  position: relative;
+
+  &__real {
+    display: none;
+  }
+
+  &__btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 4px 10px;
+    z-index: 10;
+    cursor: pointer;
+    user-select: none;
+  }
+}

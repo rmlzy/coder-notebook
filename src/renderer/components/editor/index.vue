@@ -36,16 +36,23 @@ export default {
     }),
   },
   watch: {
-    currentNote(newVal) {
-      if (newVal) {
-        this.title = newVal.title;
-        this.content = newVal.content;
+    currentNoteUuid(newVal) {
+      if (this.currentNote) {
+        this.title = this.currentNote.title;
+        this.content = this.currentNote.content;
+      } else {
+        this.title = "";
+        this.content = "";
       }
     },
   },
   created() {
     if (this.currentNote) {
       this.title = this.currentNote.title;
+      this.content = this.currentNote.content;
+    } else {
+      this.title = "";
+      this.content = "";
     }
   },
   methods: {

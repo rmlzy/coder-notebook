@@ -1,10 +1,14 @@
 import path from "path";
+import _ from "lodash";
 import fs from "fs-extra";
 import { shell, remote } from "electron";
 import { v4 as uuidv4 } from "uuid";
 import MarkdownIt from "markdown-it";
 import hljs from "highlight.js";
+import shelljs from "shelljs";
 import pkg from "../../../package.json";
+
+shelljs.config.execPath = shelljs.which("node").toString();
 
 const md = new MarkdownIt({
   html: true,
@@ -14,9 +18,18 @@ const md = new MarkdownIt({
   typographer: true,
   quotes: "“”‘’",
   highlight: function (str, lang) {
+    let canRun = false;
+    if (lang === "bash") {
+      canRun = true;
+    }
     if (lang && hljs.getLanguage(lang)) {
       try {
-        return '<pre class="hljs"><code>' + hljs.highlight(lang, str, true).value + "</code></pre>";
+        const canRunClass = canRun ? "is-run-code" : "";
+        const hljsEl = hljs.highlight(lang, str, true).value;
+        const btnEl = canRun
+          ? `<div class='is-run-code__btn'>RUN</div><div class='is-run-code__real' style='display: none;'>${str}</div>`
+          : "";
+        return `<pre class="hljs ${canRunClass}" data-language='${lang}'><code>${hljsEl}</code>${btnEl}</pre>`;
       } catch (__) {}
     }
     return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + "</code></pre>";
@@ -25,6 +38,18 @@ const md = new MarkdownIt({
 md.validateLink = () => true;
 
 export const uuid = uuidv4;
+
+export const runCurl = async (code) => {
+  return new Promise((resolve, reject) => {
+    shelljs.exec(code, (code, stdout, stderr) => {
+      if (code === 0) {
+        resolve({ success: true, data: stdout });
+      } else {
+        resolve({ success: false, data: stdout });
+      }
+    });
+  });
+};
 
 export const showInFinder = (p) => {
   shell.showItemInFolder(p);

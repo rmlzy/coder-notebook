@@ -98,7 +98,7 @@ export default {
   },
   data() {
     return {
-      mode: "PREVIEW",
+      mode: "EDIT",
     };
   },
   computed: {

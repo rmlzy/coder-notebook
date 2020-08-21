@@ -86,9 +86,9 @@ export default {
     },
 
     async selectNote({ state, commit, dispatch }, noteUuid) {
-      commit("SET_CURRENT_NOTE_UUID", noteUuid);
       const note = await getNote(state.currentNotebookUuid, noteUuid);
       commit("SET_CURRENT_NOTE", note);
+      commit("SET_CURRENT_NOTE_UUID", noteUuid);
     },
 
     async refreshNotebooks({ commit }) {

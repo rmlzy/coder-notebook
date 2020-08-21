@@ -81,6 +81,10 @@ export default {
       const aceTheme = this.getAceTheme(newVal);
       this.editor.setTheme(`ace/theme/${aceTheme}`);
     },
+    value(newVal) {
+      this.editor.setValue(newVal);
+      this.editor.clearSelection();
+    },
   },
   mounted() {
     const aceTheme = this.getAceTheme(this.theme);

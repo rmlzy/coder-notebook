@@ -1,3 +1,4 @@
+import "whatwg-fetch";
 import Vue from "vue";
 import axios from "axios";
 import Antd from "ant-design-vue";
