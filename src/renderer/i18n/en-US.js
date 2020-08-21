@@ -24,4 +24,8 @@ export default {
   LightTheme: "Light",
   DarkTheme: "Dark",
   Language: "Language",
+  DataPath: "Data Path",
+  Open: "Open",
+  AppName: "App Name",
+  BackgroundImage: "Background Image",
 };

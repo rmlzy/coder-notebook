@@ -5,10 +5,7 @@ import { shell, remote } from "electron";
 import { v4 as uuidv4 } from "uuid";
 import MarkdownIt from "markdown-it";
 import hljs from "highlight.js";
-import shelljs from "shelljs";
 import pkg from "../../../package.json";
-
-shelljs.config.execPath = shelljs.which("node").toString();
 
 const md = new MarkdownIt({
   html: true,
@@ -41,13 +38,7 @@ export const uuid = uuidv4;
 
 export const runCurl = async (code) => {
   return new Promise((resolve, reject) => {
-    shelljs.exec(code, (code, stdout, stderr) => {
-      if (code === 0) {
-        resolve({ success: true, data: stdout });
-      } else {
-        resolve({ success: false, data: stdout });
-      }
-    });
+    resolve({ success: true, data: "功能开发中..." });
   });
 };
 

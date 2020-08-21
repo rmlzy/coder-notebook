@@ -24,4 +24,8 @@ export default {
   LightTheme: "日",
   DarkTheme: "夜",
   Language: "言語",
+  DataPath: "データ パス",
+  Open: "開く",
+  AppName: "アプリ名",
+  BackgroundImage: "背景画像",
 };

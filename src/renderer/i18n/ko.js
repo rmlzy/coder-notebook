@@ -24,4 +24,8 @@ export default {
   LightTheme: "빛",
   DarkTheme: "어두운",
   Language: "언어",
+  DataPath: "데이터 경로",
+  Open: "열기",
+  AppName: "앱 이름",
+  BackgroundImage: "배경 이미지",
 };
