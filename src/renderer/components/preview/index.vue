@@ -14,7 +14,9 @@ export default {
 
 <style lang="scss" scoped>
 .preview {
-  padding: 0 30px;
+  width: 100%;
+  height: 100%;
+  padding: 0 30px 30px;
   word-break: break-all;
 
   &__title {

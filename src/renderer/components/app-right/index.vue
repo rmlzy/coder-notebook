@@ -161,10 +161,6 @@ export default {
     overflow-x: hidden;
     overflow-y: auto;
     display: flex;
-
-    & > div {
-      flex: 1;
-    }
   }
 
   &__empty {

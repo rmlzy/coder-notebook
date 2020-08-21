@@ -45,15 +45,21 @@
     },
     "mac": {
       "icon": "build/icons/icon.icns",
-      "target": ["dmg"]
+      "target": [
+        "dmg"
+      ]
     },
     "win": {
       "icon": "build/icons/icon.ico",
-      "target": ["portable"]
+      "target": [
+        "portable"
+      ]
     },
     "linux": {
       "icon": "build/icons",
-      "target": ["AppImage"]
+      "target": [
+        "AppImage"
+      ]
     }
   },
   "dependencies": {
@@ -62,6 +68,7 @@
     "brace": "^0.11.1",
     "dayjs": "^1.8.33",
     "fs-extra": "8.1.0",
+    "highlight.js": "^10.1.2",
     "lodash": "^4.17.19",
     "markdown-it": "^11.0.0",
     "uuid": "^8.3.0",

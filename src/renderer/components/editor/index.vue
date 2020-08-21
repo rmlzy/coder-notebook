@@ -4,13 +4,7 @@
       <input type="text" v-model="title" :placeholder="$t('Untitled')" @blur="onTitleBlur" />
     </div>
     <div class="editor__bd" v-if="currentNote">
-      <ace-editor
-        :value="currentNote.content"
-        :theme="config.theme"
-        @focus="onFocus"
-        @blur="onBlur"
-        @change="onChange"
-      />
+      <ace-editor :value="content" :theme="config.theme" @focus="onFocus" @blur="onBlur" @change="onChange" />
     </div>
   </div>
 </template>
@@ -30,6 +24,7 @@ export default {
   data() {
     return {
       title: "",
+      content: "",
     };
   },
   computed: {
@@ -44,6 +39,7 @@ export default {
     currentNote(newVal) {
       if (newVal) {
         this.title = newVal.title;
+        this.content = newVal.content;
       }
     },
   },

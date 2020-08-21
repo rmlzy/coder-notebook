@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { getNotebooks, getNotes, getNote } from "@/helpers/util";
+import { getNotebooks, getNotes, getNote, setConfig } from "@/helpers/util";
 
 export default {
   namespaced: true,

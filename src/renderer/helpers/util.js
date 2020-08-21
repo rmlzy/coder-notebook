@@ -3,6 +3,7 @@ import fs from "fs-extra";
 import { shell, remote } from "electron";
 import { v4 as uuidv4 } from "uuid";
 import MarkdownIt from "markdown-it";
+import hljs from "highlight.js";
 import pkg from "../../../package.json";
 
 const md = new MarkdownIt({
@@ -12,6 +13,14 @@ const md = new MarkdownIt({
   linkify: true,
   typographer: true,
   quotes: "“”‘’",
+  highlight: function (str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return '<pre class="hljs"><code>' + hljs.highlight(lang, str, true).value + "</code></pre>";
+      } catch (__) {}
+    }
+    return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + "</code></pre>";
+  },
 });
 md.validateLink = () => true;
 
