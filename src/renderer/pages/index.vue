@@ -65,8 +65,7 @@ export default {
       document.body.setAttribute("class", `theme-${config.theme}`);
     }
     await this.$store.dispatch("app/setConfig", config);
-    await this.$store.dispatch("app/refreshNotebooks");
-    await this.$store.dispatch("app/selectNotebook", "Inbox");
+    await this.$store.dispatch("app/initSelected");
 
     ipcRenderer.on("click-menu-save", () => {
       console.log("receive click menu save");

@@ -54,7 +54,7 @@ export default {
     async onOk() {
       const nbUuid = await createNotebook(this.dialogForm.name);
       await this.$store.dispatch("app/refreshNotebooks");
-      await this.$store.dispatch("app/selectNotebook", nbUuid);
+      await this.$store.dispatch("app/selectNotebook", { notebookUuid: nbUuid });
       this.onCancel();
     },
   },

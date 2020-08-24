@@ -61,7 +61,7 @@ export default {
 
     selectNotebook(notebookUuid) {
       if (notebookUuid === this.currentNotebookUuid) return;
-      this.$store.dispatch("app/selectNotebook", notebookUuid);
+      this.$store.dispatch("app/selectNotebook", { notebookUuid });
     },
 
     onRename(uuid, name) {

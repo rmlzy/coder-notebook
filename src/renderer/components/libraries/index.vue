@@ -38,12 +38,12 @@ export default {
   methods: {
     selectNotebook(notebookUuid) {
       if (notebookUuid === this.currentNotebookUuid) return;
-      this.$store.dispatch("app/selectNotebook", notebookUuid);
+      this.$store.dispatch("app/selectNotebook", { notebookUuid });
     },
 
     async onClearTrash() {
       await clearTrash();
-      await this.$store.dispatch("app/refreshNotes");
+      await this.$store.dispatch("app/selectNotebook", { notebookUuid: this.currentNotebookUuid });
     },
   },
 };

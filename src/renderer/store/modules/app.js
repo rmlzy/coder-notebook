@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { getNotebooks, getNotes, getNote, setConfig } from "@/helpers/util";
+import { getNotebooks, getNotes, getNote, getConfig, setConfig } from "@/helpers/util";
 
 export default {
   namespaced: true,
@@ -43,16 +43,26 @@ export default {
   },
 
   actions: {
+    async initSelected({ state, commit, dispatch }) {
+      const notebooks = await getNotebooks();
+      commit("SET_NOTEBOOKS", notebooks);
+      const { lastNotebookUuid, lastNoteUuid } = state.config;
+      if (lastNotebookUuid && lastNoteUuid) {
+        await dispatch("selectNotebook", {
+          notebookUuid: lastNotebookUuid,
+          noteUuid: lastNoteUuid,
+        });
+      } else {
+        await dispatch("selectNotebook", { notebookUuid: "Inbox" });
+      }
+    },
+
     setConfig({ commit }, config) {
       commit("SET_CONFIG", config);
     },
 
     setPane({ commit }, pane) {
       commit("SET_PANE", pane);
-    },
-
-    setNotebooks({ commit }, notebooks) {
-      commit("SET_NOTEBOOKS", notebooks);
     },
 
     setNoteTitle({ state, commit }, title) {
@@ -74,14 +84,22 @@ export default {
       commit("SET_CURRENT_NOTE", note);
     },
 
-    async selectNotebook({ commit, dispatch }, notebookUuid) {
-      commit("SET_CURRENT_NOTEBOOK_UUID", notebookUuid);
+    async selectNotebook({ commit, dispatch }, payload) {
+      const { notebookUuid, noteUuid } = payload;
+      await setConfig("lastNotebookUuid", notebookUuid);
       const notes = await getNotes(notebookUuid);
+      commit("SET_CURRENT_NOTEBOOK_UUID", notebookUuid);
       commit("SET_NOTES", notes);
-      if (notes.length) {
-        await dispatch("selectNote", notes[0].uuid);
+      if (noteUuid) {
+        await dispatch("selectNote", noteUuid);
       } else {
-        commit("SET_CURRENT_NOTE", null);
+        if (notes.length) {
+          await dispatch("selectNote", notes[0].uuid);
+        } else {
+          commit("SET_CURRENT_NOTE", null);
+          commit("SET_CURRENT_NOTE_UUID", "");
+          await setConfig("lastNoteUuid", "");
+        }
       }
     },
 
@@ -89,6 +107,7 @@ export default {
       const note = await getNote(state.currentNotebookUuid, noteUuid);
       commit("SET_CURRENT_NOTE", note);
       commit("SET_CURRENT_NOTE_UUID", noteUuid);
+      await setConfig("lastNoteUuid", noteUuid);
     },
 
     async refreshNotebooks({ commit }) {
@@ -96,8 +115,13 @@ export default {
       commit("SET_NOTEBOOKS", notebooks);
     },
 
-    async refreshNotes({ state, dispatch }) {
-      dispatch("selectNotebook", state.currentNotebookUuid);
+    async refreshNotesThenSelectNote({ state, commit, dispatch }, noteUuid) {
+      const notes = await getNotes(state.currentNotebookUuid);
+      const note = await getNote(state.currentNotebookUuid, noteUuid);
+      commit("SET_NOTES", notes);
+      commit("SET_CURRENT_NOTE", note);
+      commit("SET_CURRENT_NOTE_UUID", noteUuid);
+      await setConfig("lastNoteUuid", noteUuid);
     },
 
     async removeNotebook({ state, commit, dispatch }, notebookUuid) {
@@ -106,6 +130,7 @@ export default {
         commit("SET_CURRENT_NOTE_UUID", "");
         commit("SET_NOTES", []);
         commit("SET_CURRENT_NOTE", null);
+        await setConfig("lastNoteUuid", "");
         await dispatch("refreshNotebooks");
       } else {
         await dispatch("refreshNotebooks");
@@ -116,8 +141,9 @@ export default {
       if (state.currentNoteUuid === noteUuid) {
         commit("SET_CURRENT_NOTE_UUID", "");
         commit("SET_CURRENT_NOTE", null);
+        await setConfig("lastNoteUuid", "");
       }
-      await dispatch("refreshNotes");
+      await dispatch("selectNotebook", { notebookUuid: state.currentNotebookUuid });
     },
   },
 };

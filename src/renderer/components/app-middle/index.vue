@@ -39,8 +39,8 @@ export default {
       if (this.currentNotebookUuid === "") {
         return;
       }
-      await createNote(this.currentNotebookUuid);
-      await this.$store.dispatch("app/refreshNotes");
+      const noteUuid = await createNote(this.currentNotebookUuid);
+      await this.$store.dispatch("app/refreshNotesThenSelectNote", noteUuid);
     },
   },
 };
