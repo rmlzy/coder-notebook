@@ -8,6 +8,7 @@
 import _ from "lodash";
 import ace from "brace";
 import { mapState } from "vuex";
+import { saveImage } from "@/helpers/util";
 
 // import all mode
 import "brace/mode/markdown";
@@ -155,16 +156,21 @@ export default {
         try {
           const blob = items[i].getAsFile();
           const { host, token } = this.config.kis;
-          const res = await uploadImg({ host, token, blob });
-          hide();
-          if (!res.success) {
-            this.$message.error(res.message);
-            return;
+          if (host) {
+            const res = await uploadImg({ host, token, blob });
+            if (!res.success) {
+              this.$message.error(res.message);
+              return;
+            }
+            this.editor.insert(`\n![${res.data.name}](${res.data.url})\n`);
+          } else {
+            const imgUrl = await saveImage(this.currentNotebookUuid, this.currentNoteUuid, blob);
+            this.editor.insert(`\n![](${imgUrl})\n`);
           }
-          this.editor.insert(`\n![${res.data.name}](${res.data.url})\n`);
         } catch (e) {
-          hide();
           break;
+        } finally {
+          hide();
         }
       }
     },
