@@ -8,7 +8,6 @@
 import _ from "lodash";
 import ace from "brace";
 import { mapState } from "vuex";
-import { saveImage } from "@/helpers/util";
 
 // import all mode
 import "brace/mode/markdown";
@@ -51,6 +50,7 @@ import "brace/theme/tomorrow_night_eighties";
 import "brace/theme/twilight";
 import "brace/theme/vibrant_ink";
 import "brace/theme/xcode";
+import { uploadImg } from "@/helpers/kis";
 
 export default {
   name: "ace-editor",
@@ -74,6 +74,7 @@ export default {
     ...mapState({
       currentNotebookUuid: (state) => state.app.currentNotebookUuid,
       currentNoteUuid: (state) => state.app.currentNoteUuid,
+      config: (state) => state.app.config,
     }),
   },
   watch: {
@@ -150,11 +151,19 @@ export default {
         if (items[i].type.indexOf("image") === -1) {
           continue;
         }
+        const hide = this.$message.loading("正在上传图片...", 0);
         try {
           const blob = items[i].getAsFile();
-          const imgUrl = await saveImage(this.currentNotebookUuid, this.currentNoteUuid, blob);
-          this.editor.insert(`\n![](${imgUrl})\n`);
+          const { host, token } = this.config.kis;
+          const res = await uploadImg({ host, token, blob });
+          hide();
+          if (!res.success) {
+            this.$message.error(res.message);
+            return;
+          }
+          this.editor.insert(`\n![${res.data.name}](${res.data.url})\n`);
         } catch (e) {
+          hide();
           break;
         }
       }

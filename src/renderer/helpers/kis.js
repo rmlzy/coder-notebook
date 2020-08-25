@@ -105,3 +105,16 @@ export const getTags = async (options) => {
   }
   return list;
 };
+
+export const uploadImg = async (options) => {
+  const { host, token, blob } = options;
+  const fd = new FormData();
+  fd.append("file", blob);
+  return $.ajax(`${host}/api/v1/upload`, {
+    type: "POST",
+    headers: { token },
+    processData: false,
+    contentType: false,
+    data: fd,
+  });
+};
