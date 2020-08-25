@@ -113,6 +113,12 @@ export const init = async () => {
     language: "zh-CN",
     leftWidth: "200px",
     middleWidth: "200px",
+    kis: {
+      host: "",
+      username: "",
+      password: "",
+      token: "",
+    },
   });
   const appPath = getAppPathSync();
   await fs.ensureDir(appPath);
@@ -164,7 +170,7 @@ export const getNotes = async (notebookUuid) => {
     const meta = await fs.readJson(path.join(nbPath, notePaths[idx], "meta.json"));
     noteMetas.push(meta);
   }
-  return noteMetas;
+  return noteMetas.sort((a, b) => b.created_at - a.created_at);
 };
 
 export const getNote = async (notebookUuid, noteUuid) => {
@@ -216,6 +222,28 @@ export const createNote = async (notebookUuid) => {
   return noteUuid;
 };
 
+export const createKisNote = async (notebookUuid, meta, content) => {
+  const appPath = getAppPathSync();
+  const noteUuid = uuid();
+  const metaPath = path.join(appPath, notebookUuid, noteUuid, "meta.json");
+  const contentPath = path.join(appPath, notebookUuid, noteUuid, "content.json");
+  meta.uuid = noteUuid;
+  await fs.outputJson(metaPath, meta);
+  await fs.outputJson(contentPath, content);
+  return noteUuid;
+};
+
+export const updateKisNote = async (notebookUuid, noteUuid, meta, content) => {
+  const appPath = getAppPathSync();
+  const metaPath = path.join(appPath, notebookUuid, noteUuid, "meta.json");
+  const contentPath = path.join(appPath, notebookUuid, noteUuid, "content.json");
+  meta.uuid = noteUuid;
+  meta.updated_at = +new Date();
+  await fs.outputJson(metaPath, meta);
+  await fs.outputJson(contentPath, content);
+  return noteUuid;
+};
+
 export const updateNoteTitle = async (notebookUuid, noteUuid, noteTitle) => {
   const appPath = getAppPathSync();
 
@@ -254,6 +282,11 @@ export const moveNotebookToTrash = async (notebookUuid) => {
     const targetNotePath = path.join(appPath, "Trash", notePaths[i]);
     await fs.move(sourceNotePath, targetNotePath);
   }
+  await fs.remove(path.join(appPath, notebookUuid));
+};
+
+export const forceRemoveNotebook = async (notebookUuid) => {
+  const appPath = getAppPathSync();
   await fs.remove(path.join(appPath, notebookUuid));
 };
 

@@ -4,7 +4,14 @@
       <a-dropdown v-for="(item, index) in notes" :key="index" :trigger="['contextmenu']">
         <div :class="{ note: true, active: item.uuid === currentNoteUuid }" @click="selectNote(item.uuid)">
           <div class="note__title ellipsis">{{ item.title }}</div>
-          <div class="note__date">{{ item.updated_at | formatTs }}</div>
+          <div class="note__date">{{ item.created_at | formatTs }}</div>
+          <template v-if="currentNotebookUuid === 'KIS_NOTEBOOK'">
+            <div v-if="!item.status" class="note__tag is-local">本地文件</div>
+            <div v-if="item.status === 'TOP'" class="note__tag is-top">置顶</div>
+            <div v-if="item.status === 'DRAFT'" class="note__tag is-draft">草稿</div>
+            <div v-if="item.status === 'PUBLISHED'" class="note__tag is-published">已发布</div>
+            <div v-if="item.status === 'HIDE'" class="note__tag is-hide">隐藏</div>
+          </template>
         </div>
 
         <a-menu slot="overlay" overlayClassName="Hey">
@@ -52,6 +59,7 @@ export default {
 
 <style lang="scss" scoped>
 .note {
+  position: relative;
   width: 100%;
   height: 60px;
   padding: 10px;
@@ -81,6 +89,32 @@ export default {
 
   &__date {
     font-size: 12px;
+  }
+
+  &__tag {
+    position: absolute;
+    bottom: 0;
+    right: 4px;
+    font-size: 12px;
+
+    &.is-draft {
+    }
+
+    &.is-local {
+      color: #13c2c2;
+    }
+
+    &.is-top {
+      color: #f5222d;
+    }
+
+    &.is-published {
+      color: #52c41a;
+    }
+
+    &.is-hide {
+      color: #1890ff;
+    }
   }
 }
 

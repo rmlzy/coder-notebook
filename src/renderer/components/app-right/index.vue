@@ -57,6 +57,9 @@
               <a-icon type="read" />
             </a-button>
           </a-button-group>
+          <div class="right__hd__publish" v-if="currentNotebookUuid === 'KIS_NOTEBOOK'">
+            <publish-to-kis />
+          </div>
         </div>
         <div class="right__bd">
           <template v-if="mode === 'MULTIPLE'">
@@ -87,6 +90,7 @@
 <script>
 import { mapState } from "vuex";
 import { md2html } from "@/helpers/util";
+import publishToKis from "../publish-to-kis";
 import editor from "../editor";
 import preview from "../preview";
 
@@ -95,6 +99,7 @@ export default {
   components: {
     preview,
     editor,
+    publishToKis,
   },
   data() {
     return {
@@ -124,83 +129,6 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.right {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  padding: 35px 0 0 0;
-
-  &__hd {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 35px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &__menu {
-      position: absolute;
-      top: 8px;
-      left: 10px;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    .ant-btn {
-      border: none !important;
-    }
-  }
-
-  &__bd {
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    display: flex;
-  }
-
-  &__empty {
-    width: 100%;
-    height: 100%;
-    padding-bottom: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-.mode {
-  &__btn {
-    display: inline-block;
-    min-width: 60px;
-    font-size: 16px;
-    height: 25px;
-    line-height: 23px;
-    padding: 0;
-  }
-}
-
-.has-border {
-  border-left: 1px solid var(--border-color);
-}
-
-.pane {
-  position: relative;
-  height: 100%;
-  min-width: 80px;
-  padding: 0 20px;
-
-  &__icon {
-    position: absolute;
-    top: 4px;
-    left: 0;
-  }
-
-  &__name {
-  }
-}
+<style lang="less" scoped>
+@import "./style";
 </style>

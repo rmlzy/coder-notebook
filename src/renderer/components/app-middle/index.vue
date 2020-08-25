@@ -11,13 +11,25 @@
     <div class="mid__bd">
       <notes />
     </div>
-    <div class="mid__ft"></div>
+    <div class="mid__ft">
+      <a-button
+        v-if="currentNotebookUuid === 'KIS_NOTEBOOK'"
+        :loading="kisSyncLoading"
+        size="small"
+        type="link"
+        icon="cloud-sync"
+        @click="sync"
+      >
+        同步
+      </a-button>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
 import { createNote } from "@/helpers/util";
+import { syncAllBlogs } from "@/helpers/kis";
 import notes from "../notes";
 
 export default {
@@ -25,8 +37,14 @@ export default {
   components: {
     notes,
   },
+  data() {
+    return {
+      kisSyncLoading: false,
+    };
+  },
   computed: {
     ...mapState({
+      config: (state) => state.app.config,
       notebooks: (state) => state.app.notebooks,
       currentNotebookUuid: (state) => state.app.currentNotebookUuid,
     }),
@@ -41,6 +59,21 @@ export default {
       }
       const noteUuid = await createNote(this.currentNotebookUuid);
       await this.$store.dispatch("app/refreshNotesThenSelectNote", noteUuid);
+    },
+
+    async sync() {
+      this.kisSyncLoading = true;
+      const { host, token, notebookName } = this.config.kis;
+      try {
+        await syncAllBlogs({ host, token, notebookName });
+        await this.$store.dispatch("app/refreshNotebooks");
+        await this.$store.dispatch("app/selectNotebook", { notebookUuid: "KIS_NOTEBOOK" });
+        this.$message.success("同步成功");
+      } catch (e) {
+        this.$message.error(e.message);
+      } finally {
+        this.kisSyncLoading = false;
+      }
     },
   },
 };
@@ -93,6 +126,9 @@ export default {
     width: 100%;
     height: 35px;
     border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    padding: 0 3px;
   }
 }
 </style>
