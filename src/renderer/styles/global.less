@@ -1,5 +1,8 @@
 @import "~ant-design-vue/dist/antd.less";
 @import "./markdown";
+@import "./quill-light";
+@import "./quill-dark";
+@import "./hljs";
 
 .theme-light {
   --color: #202124;
@@ -66,100 +69,6 @@
   code,
   kbd {
     background-color: #f6f8fa;
-  }
-
-  .hljs {
-    display: block;
-    overflow-x: auto;
-    padding: 0.5em;
-    color: #333;
-    background: #f8f8f8;
-  }
-
-  .hljs-comment,
-  .hljs-quote {
-    color: #998;
-    font-style: italic;
-  }
-
-  .hljs-keyword,
-  .hljs-selector-tag,
-  .hljs-subst {
-    color: #333;
-    font-weight: bold;
-  }
-
-  .hljs-number,
-  .hljs-literal,
-  .hljs-variable,
-  .hljs-template-variable,
-  .hljs-tag .hljs-attr {
-    color: #008080;
-  }
-
-  .hljs-string,
-  .hljs-doctag {
-    color: #d14;
-  }
-
-  .hljs-title,
-  .hljs-section,
-  .hljs-selector-id {
-    color: #900;
-    font-weight: bold;
-  }
-
-  .hljs-subst {
-    font-weight: normal;
-  }
-
-  .hljs-type,
-  .hljs-class .hljs-title {
-    color: #458;
-    font-weight: bold;
-  }
-
-  .hljs-tag,
-  .hljs-name,
-  .hljs-attribute {
-    color: #000080;
-    font-weight: normal;
-  }
-
-  .hljs-regexp,
-  .hljs-link {
-    color: #009926;
-  }
-
-  .hljs-symbol,
-  .hljs-bullet {
-    color: #990073;
-  }
-
-  .hljs-built_in,
-  .hljs-builtin-name {
-    color: #0086b3;
-  }
-
-  .hljs-meta {
-    color: #999;
-    font-weight: bold;
-  }
-
-  .hljs-deletion {
-    background: #fdd;
-  }
-
-  .hljs-addition {
-    background: #dfd;
-  }
-
-  .hljs-emphasis {
-    font-style: italic;
-  }
-
-  .hljs-strong {
-    font-weight: bold;
   }
 }
 
@@ -229,75 +138,6 @@
   kbd {
     background-color: rgba(255, 255, 255, 0.1);
   }
-
-  .hljs-comment,
-  .hljs-quote {
-    color: #969896;
-  }
-
-  /* Tomorrow Red */
-  .hljs-variable,
-  .hljs-template-variable,
-  .hljs-tag,
-  .hljs-name,
-  .hljs-selector-id,
-  .hljs-selector-class,
-  .hljs-regexp,
-  .hljs-deletion {
-    color: #cc6666;
-  }
-
-  /* Tomorrow Orange */
-  .hljs-number,
-  .hljs-built_in,
-  .hljs-builtin-name,
-  .hljs-literal,
-  .hljs-type,
-  .hljs-params,
-  .hljs-meta,
-  .hljs-link {
-    color: #de935f;
-  }
-
-  /* Tomorrow Yellow */
-  .hljs-attribute {
-    color: #f0c674;
-  }
-
-  /* Tomorrow Green */
-  .hljs-string,
-  .hljs-symbol,
-  .hljs-bullet,
-  .hljs-addition {
-    color: #b5bd68;
-  }
-
-  /* Tomorrow Blue */
-  .hljs-title,
-  .hljs-section {
-    color: #81a2be;
-  }
-
-  /* Tomorrow Purple */
-  .hljs-keyword,
-  .hljs-selector-tag {
-    color: #b294bb;
-  }
-
-  .hljs {
-    display: block;
-    overflow-x: auto;
-    color: #c5c8c6;
-    padding: 0.5em;
-  }
-
-  .hljs-emphasis {
-    font-style: italic;
-  }
-
-  .hljs-strong {
-    font-weight: bold;
-  }
 }
 
 body {
@@ -308,6 +148,28 @@ body {
 * {
   box-sizing: border-box;
 }
+
+*:focus {
+  outline: none;
+}
+
+.quill-editor {
+  width: 100%;
+  height: calc(100vh - 104px);
+  position: relative;
+  padding-top: 50px;
+
+  .ql-toolbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .ql-editor {
+    padding: 5px 0;
+  }
+}
+
 
 .ant-input-group-addon {
   background: transparent;
@@ -332,6 +194,7 @@ body {
 }
 
 .ace_editor {
+  font-size: 13px;
   background: transparent !important;
 }
 

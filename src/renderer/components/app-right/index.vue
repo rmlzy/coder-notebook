@@ -8,7 +8,7 @@
       </template>
       <template v-else>
         <div class="right__hd">
-          <a-dropdown key="Menu" :trigger="['click']">
+          <a-dropdown key="Menu" :trigger="['click', 'contextmenu']">
             <a-icon class="right__hd__menu" type="menu" />
             <a-menu slot="overlay">
               <a-menu-item @click="onSetPane(1)">
@@ -48,29 +48,12 @@
             >
               <a-icon type="eye" />
             </a-button>
-            <a-button
-              class="mode__btn"
-              size="small"
-              :type="mode === 'MULTIPLE' ? 'primary' : 'default'"
-              @click="toggleMode('MULTIPLE')"
-            >
-              <a-icon type="read" />
-            </a-button>
           </a-button-group>
           <div class="right__hd__publish" v-if="currentNotebookUuid === 'KIS_NOTEBOOK'">
             <publish-to-kis />
           </div>
         </div>
         <div class="right__bd">
-          <template v-if="mode === 'MULTIPLE'">
-            <div style="width: 50%;">
-              <editor />
-            </div>
-            <div class="has-border" style="width: 50%;">
-              <preview :title="currentNote.title" :html="html" />
-            </div>
-          </template>
-
           <template v-if="mode === 'EDIT'">
             <editor />
           </template>
@@ -114,7 +97,13 @@ export default {
       currentNoteUuid: (state) => state.app.currentNoteUuid,
     }),
     html() {
-      return md2html(this.currentNotebookUuid, this.currentNoteUuid, this.currentNote.content);
+      const { type, content } = this.currentNote;
+      if (type === "MARKDOWN") {
+        return md2html(this.currentNotebookUuid, this.currentNoteUuid, content);
+      }
+      if (type === "RICH_TEXT") {
+        return content;
+      }
     },
   },
   methods: {

@@ -4,7 +4,8 @@
       <input type="text" v-model="title" :placeholder="$t('Untitled')" @blur="onTitleBlur" />
     </div>
     <div class="editor__bd" v-if="currentNote">
-      <ace-editor :value="content" :theme="config.theme" @focus="onFocus" @blur="onBlur" @change="onChange" />
+      <q-editor v-if="currentNote.type === 'RICH_TEXT'" :value="content" @change="onChange" />
+      <ace-editor v-else :value="content" :theme="config.theme" @change="onChange" />
     </div>
   </div>
 </template>
@@ -13,13 +14,12 @@
 import { mapState } from "vuex";
 import { formatTs } from "@/helpers/filters";
 import aceEditor from "@/components/ace-editor";
+import qEditor from "@/components/q-editor";
 import { updateNoteTitle, updateNoteContent } from "@/helpers/util";
 
 export default {
   name: "editor",
-  components: {
-    aceEditor,
-  },
+  components: { aceEditor, qEditor },
   filters: { formatTs },
   data() {
     return {
@@ -60,10 +60,6 @@ export default {
       await updateNoteTitle(this.currentNotebookUuid, this.currentNoteUuid, this.title);
       await this.$store.dispatch("app/setNoteTitle", this.title);
     },
-
-    onFocus(cell) {},
-
-    onBlur() {},
 
     async onChange(content) {
       await updateNoteContent(this.currentNotebookUuid, this.currentNoteUuid, content);

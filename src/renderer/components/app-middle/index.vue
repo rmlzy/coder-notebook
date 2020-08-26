@@ -1,7 +1,13 @@
 <template>
   <div class="mid">
     <div class="mid__hd">
-      <a-icon class="mid__hd__icon" v-if="currentNotebookUuid !== 'Trash'" type="plus" @click="onCreateNote" />
+      <a-dropdown :trigger="['click', 'contextmenu']">
+        <a-icon v-if="currentNotebookUuid !== 'Trash'" class="mid__hd__icon" type="plus" />
+        <a-menu slot="overlay">
+          <a-menu-item key="rename" @click="onCreateNote('MARKDOWN')">MARKDOWN</a-menu-item>
+          <a-menu-item key="remove" @click="onCreateNote('RICH_TEXT')">富文本</a-menu-item>
+        </a-menu>
+      </a-dropdown>
       <div class="mid__hd__name ellipsis" v-if="currentNotebook">
         <template v-if="currentNotebookUuid === 'Trash'">{{ $t("Trash") }}</template>
         <template v-else-if="currentNotebookUuid === 'Inbox'">{{ $t("Inbox") }}</template>
@@ -53,11 +59,11 @@ export default {
     },
   },
   methods: {
-    async onCreateNote() {
+    async onCreateNote(type) {
       if (this.currentNotebookUuid === "") {
         return;
       }
-      const noteUuid = await createNote(this.currentNotebookUuid);
+      const noteUuid = await createNote(this.currentNotebookUuid, type);
       await this.$store.dispatch("app/refreshNotesThenSelectNote", noteUuid);
     },
 

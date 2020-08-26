@@ -168,6 +168,7 @@ export const getNotes = async (notebookUuid) => {
   const noteMetas = [];
   for (let idx in notePaths) {
     const meta = await fs.readJson(path.join(nbPath, notePaths[idx], "meta.json"));
+    meta.type = meta.type || "MARKDOWN";
     noteMetas.push(meta);
   }
   return noteMetas.sort((a, b) => b.created_at - a.created_at);
@@ -201,7 +202,7 @@ export const updateNotebookName = async (notebookUuid, name) => {
   await fs.outputJson(metaPath, meta);
 };
 
-export const createNote = async (notebookUuid) => {
+export const createNote = async (notebookUuid, type) => {
   const appPath = getAppPathSync();
   const noteUuid = uuid();
   const metaPath = path.join(appPath, notebookUuid, noteUuid, "meta.json");
@@ -214,6 +215,7 @@ export const createNote = async (notebookUuid) => {
     tags: [],
     created_at: ts,
     updated_at: ts,
+    type,
   });
   await fs.outputJson(contentPath, {
     title: defaultTitle,

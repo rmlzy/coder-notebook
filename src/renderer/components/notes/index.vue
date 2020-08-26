@@ -3,14 +3,30 @@
     <template v-if="notes.length">
       <a-dropdown v-for="(item, index) in notes" :key="index" :trigger="['contextmenu']">
         <div :class="{ note: true, active: item.uuid === currentNoteUuid }" @click="selectNote(item.uuid)">
-          <div class="note__title ellipsis">{{ item.title }}</div>
+          <div class="note__title ellipsis">
+            <template v-if="currentNotebookUuid === 'KIS_NOTEBOOK'">
+              <a-tooltip placement="left" title="本地文件">
+                <a-badge v-if="!item.status" status="warning" />
+              </a-tooltip>
+              <a-tooltip placement="left" title="已发布">
+                <a-badge v-if="item.status === 'PUBLISHED'" status="success" />
+              </a-tooltip>
+              <a-tooltip placement="left" title="置顶">
+                <a-badge v-if="item.status === 'TOP'" status="error" />
+              </a-tooltip>
+              <a-tooltip placement="left" title="草稿">
+                <a-badge v-if="item.status === 'DRAFT'" status="default" />
+              </a-tooltip>
+              <a-tooltip placement="left" title="隐藏">
+                <a-badge v-if="item.status === 'HIDE'" status="processing" />
+              </a-tooltip>
+            </template>
+            <span>{{ item.title }}</span>
+          </div>
           <div class="note__date">{{ item.created_at | formatTs }}</div>
-          <template v-if="currentNotebookUuid === 'KIS_NOTEBOOK'">
-            <div v-if="!item.status" class="note__tag is-local">本地文件</div>
-            <div v-if="item.status === 'TOP'" class="note__tag is-top">置顶</div>
-            <div v-if="item.status === 'DRAFT'" class="note__tag is-draft">草稿</div>
-            <div v-if="item.status === 'PUBLISHED'" class="note__tag is-published">已发布</div>
-            <div v-if="item.status === 'HIDE'" class="note__tag is-hide">隐藏</div>
+          <template v-if="item.uuid === currentNoteUuid">
+            <div v-if="item.type === 'MARKDOWN'" class="note__tag is-md">md</div>
+            <div v-if="item.type === 'RICH_TEXT'" class="note__tag is-rich">富文本</div>
           </template>
         </div>
 
@@ -122,23 +138,12 @@ export default {
     right: 4px;
     font-size: 12px;
 
-    &.is-draft {
-    }
-
-    &.is-local {
+    &.is-md {
       color: #13c2c2;
     }
 
-    &.is-top {
-      color: #f5222d;
-    }
-
-    &.is-published {
+    &.is-rich {
       color: #52c41a;
-    }
-
-    &.is-hide {
-      color: #1890ff;
     }
   }
 }
