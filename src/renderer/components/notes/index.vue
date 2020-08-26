@@ -21,12 +21,12 @@
                 <a-badge v-if="item.status === 'HIDE'" status="processing" />
               </a-tooltip>
             </template>
-            <span>{{ item.title }}</span>
+            <span>{{ item.title || $t("Untitled") }}</span>
           </div>
           <div class="note__date">{{ item.created_at | formatTs }}</div>
           <template v-if="item.uuid === currentNoteUuid">
-            <div v-if="item.type === 'MARKDOWN'" class="note__tag is-md">md</div>
-            <div v-if="item.type === 'RICH_TEXT'" class="note__tag is-rich">富文本</div>
+            <div v-if="item.type === 'MARKDOWN'" class="note__tag">md</div>
+            <div v-if="item.type === 'RICH_TEXT'" class="note__tag">富文本</div>
           </template>
         </div>
 
@@ -137,14 +137,7 @@ export default {
     bottom: 0;
     right: 4px;
     font-size: 12px;
-
-    &.is-md {
-      color: #13c2c2;
-    }
-
-    &.is-rich {
-      color: #52c41a;
-    }
+    color: #13c2c2;
   }
 }
 

@@ -111,10 +111,11 @@ export default {
 
     async onOk() {
       const { host, token } = this.config.kis;
-      const { uuid, title, content } = this.currentNote;
+      const { uuid, type, title, content } = this.currentNote;
       const fd = {
         host,
         token,
+        type,
         title,
         content,
         ...this.formData,

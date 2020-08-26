@@ -207,10 +207,9 @@ export const createNote = async (notebookUuid, type) => {
   const noteUuid = uuid();
   const metaPath = path.join(appPath, notebookUuid, noteUuid, "meta.json");
   const contentPath = path.join(appPath, notebookUuid, noteUuid, "content.json");
-  const defaultTitle = "Untitled";
   const ts = +new Date();
   await fs.outputJson(metaPath, {
-    title: defaultTitle,
+    title: "",
     uuid: noteUuid,
     tags: [],
     created_at: ts,
@@ -218,7 +217,7 @@ export const createNote = async (notebookUuid, type) => {
     type,
   });
   await fs.outputJson(contentPath, {
-    title: defaultTitle,
+    title: "",
     content: "",
   });
   return noteUuid;

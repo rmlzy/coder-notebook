@@ -48,34 +48,18 @@ export const syncBlog = async (options) => {
 };
 
 export const updateBlog = async (options) => {
-  const { host, token, id, pathname, title, summary, content, categoryId, tagIds, status } = options;
+  const { host, token, id, type, pathname, title, summary, content, categoryId, tagIds, status } = options;
   if (id) {
     return $.ajax(`${host}/api/v1/blog/${id}`, {
       type: "PUT",
       headers: { token },
-      data: {
-        title,
-        content,
-        pathname,
-        summary,
-        categoryId,
-        tagIds,
-        status,
-      },
+      data: { type, title, content, pathname, summary, categoryId, tagIds, status },
     });
   } else {
     return $.ajax(`${host}/api/v1/blog`, {
       type: "POST",
       headers: { token },
-      data: {
-        title,
-        content,
-        pathname,
-        summary,
-        categoryId,
-        tagIds,
-        status,
-      },
+      data: { type, title, content, pathname, summary, categoryId, tagIds, status },
     });
   }
 };
