@@ -11,7 +11,7 @@ export const blogToMeta = (blog) => {
     tagIds: blog.Tags ? blog.Tags.map((item) => item.id) : [],
     categoryId: blog.Category ? blog.Category.id : "",
     type: blog.type,
-    created_at: +new Date(blog.updatedAt),
+    created_at: +new Date(blog.createdAt),
     updated_at: +new Date(blog.updatedAt),
   };
 };
