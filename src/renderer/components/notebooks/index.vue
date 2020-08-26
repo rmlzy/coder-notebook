@@ -79,7 +79,7 @@ export default {
 
     async onRemove(uuid) {
       await moveNotebookToTrash(uuid);
-      await this.$store.dispatch("app/removeNotebook");
+      await this.$store.dispatch("app/removeNotebook", uuid);
     },
   },
 };

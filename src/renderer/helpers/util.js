@@ -328,3 +328,9 @@ export const saveImage = async (notebookUuid, noteUuid, imgBlob) => {
     };
   });
 };
+
+export const isNoteExisted = (notebookUuid, noteUuid) => {
+  const appPath = getAppPathSync();
+  const metaPath = path.join(appPath, notebookUuid, noteUuid, "meta.json");
+  return isFile(metaPath);
+};

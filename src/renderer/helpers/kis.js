@@ -80,6 +80,14 @@ export const updateBlog = async (options) => {
   }
 };
 
+export const deleteBlog = async (options) => {
+  const { host, token, id } = options;
+  return $.ajax(`${host}/api/v1/blog/${id}`, {
+    type: "DELETE",
+    headers: { token },
+  });
+};
+
 export const getCategories = async (options) => {
   const { host, token } = options;
   const res = await $.ajax(`${host}/api/v1/categories`, {

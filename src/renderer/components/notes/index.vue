@@ -15,7 +15,7 @@
         </div>
 
         <a-menu slot="overlay" overlayClassName="Hey">
-          <a-menu-item key="remove" @click="onRemove(item.uuid)">{{ $t("Remove") }}</a-menu-item>
+          <a-menu-item key="remove" @click="onRemove(item)">{{ $t("Remove") }}</a-menu-item>
         </a-menu>
       </a-dropdown>
     </template>
@@ -29,6 +29,7 @@
 import { mapState } from "vuex";
 import { formatTs } from "@/helpers/filters";
 import { moveNoteToTrash } from "@/helpers/util";
+import { deleteBlog } from "@/helpers/kis";
 
 export default {
   name: "notes",
@@ -41,6 +42,7 @@ export default {
       currentNotebookUuid: (state) => state.app.currentNotebookUuid,
       currentNoteUuid: (state) => state.app.currentNoteUuid,
       notes: (state) => state.app.notes,
+      config: (state) => state.app.config,
     }),
   },
   methods: {
@@ -49,9 +51,32 @@ export default {
       this.$store.dispatch("app/selectNote", noteUuid);
     },
 
-    async onRemove(noteUuid) {
-      await moveNoteToTrash(this.currentNotebookUuid, noteUuid);
-      await this.$store.dispatch("app/removeNote", noteUuid);
+    async onRemove({ id, uuid }) {
+      if (!id) {
+        await moveNoteToTrash(this.currentNotebookUuid, uuid);
+        await this.$store.dispatch("app/removeNote", uuid);
+        return;
+      }
+      this.$confirm({
+        title: "提示",
+        content: "是否删除远程数据库对应的文章?",
+        okText: this.$t("Ok"),
+        cancelText: this.$t("Cancel"),
+        onOk: async () => {
+          const { host, token } = this.config.kis;
+          const res = await deleteBlog({ host, token, id });
+          if (!res.success) {
+            this.$message.error(res.message);
+            return;
+          }
+          await moveNoteToTrash(this.currentNotebookUuid, uuid);
+          await this.$store.dispatch("app/removeNote", uuid);
+        },
+        onCancel: async () => {
+          await moveNoteToTrash(this.currentNotebookUuid, uuid);
+          await this.$store.dispatch("app/removeNote", uuid);
+        },
+      });
     },
   },
 };

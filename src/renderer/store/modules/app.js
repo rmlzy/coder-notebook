@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { getNotebooks, getNotes, getNote, getConfig, setConfig } from "@/helpers/util";
+import { getNotebooks, getNotes, getNote, isNoteExisted, setConfig } from "@/helpers/util";
 
 export default {
   namespaced: true,
@@ -47,7 +47,7 @@ export default {
       const notebooks = await getNotebooks();
       commit("SET_NOTEBOOKS", notebooks);
       const { lastNotebookUuid, lastNoteUuid } = state.config;
-      if (lastNotebookUuid && lastNoteUuid) {
+      if (lastNotebookUuid && lastNoteUuid && isNoteExisted(lastNotebookUuid, lastNoteUuid)) {
         await dispatch("selectNotebook", {
           notebookUuid: lastNotebookUuid,
           noteUuid: lastNoteUuid,
@@ -126,12 +126,8 @@ export default {
 
     async removeNotebook({ state, commit, dispatch }, notebookUuid) {
       if (state.currentNotebookUuid === notebookUuid) {
-        commit("SET_CURRENT_NOTEBOOK_UUID", "");
-        commit("SET_CURRENT_NOTE_UUID", "");
-        commit("SET_NOTES", []);
-        commit("SET_CURRENT_NOTE", null);
-        await setConfig("lastNoteUuid", "");
         await dispatch("refreshNotebooks");
+        await dispatch("selectNotebook", { notebookUuid: "Inbox" });
       } else {
         await dispatch("refreshNotebooks");
       }

@@ -49,19 +49,19 @@
             </a-col>
           </a-row>
         </a-tab-pane>
-        <a-tab-pane key="kis" :tab="$t('Kis')">
-          <a-form-model-item :label="$t('Host')">
+        <a-tab-pane key="kis" tab="Kis">
+          <a-form-model-item label="域名">
             <a-input v-model="formData.kis.host" />
           </a-form-model-item>
-          <a-form-model-item :label="$t('Token')">
+          <a-form-model-item label="Token">
             <a-input v-model="formData.kis.token" />
           </a-form-model-item>
-          <a-form-model-item :label="$t('NotebookName')">
-            <a-input v-model="formData.kis.notebookName" />
+          <a-form-model-item label="文件夹名称">
+            <a-input v-model="formData.kis.notebookName" placeholder="Kis 所有的文章将被同步到此文件夹下" />
           </a-form-model-item>
-          <a-button v-if="!kisIsValid" size="small" type="primary" @click="testKisConnect">Test Connect</a-button>
+          <a-button v-if="!kisIsValid" size="small" type="primary" @click="testKisConnect">测试连接</a-button>
           <a-button v-else :loading="kisSyncLoading" size="small" type="primary" @click="onSyncKis">
-            Sync Blogs
+            开始同步
           </a-button>
         </a-tab-pane>
       </a-tabs>
@@ -87,7 +87,7 @@ export default {
   props: ["visible"],
   data() {
     return {
-      activeTab: "kis",
+      activeTab: "theme",
       themeList: [
         { label: this.$t("LightTheme"), value: "light" },
         { label: this.$t("DarkTheme"), value: "dark" },

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-button ghost size="small" type="primary" icon="rocket" @click="showModal">
+    <a-button size="small" type="primary" icon="rocket" @click="showModal">
       发布
     </a-button>
 
