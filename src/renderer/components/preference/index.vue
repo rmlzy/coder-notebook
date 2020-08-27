@@ -1,5 +1,5 @@
 <template>
-  <a-modal :visible="visible" :title="$t('Preference')" style="top: 5%;" width="600px" @cancel="onCancel">
+  <a-modal :visible="visible" :title="$t('Preference')" centered width="600px" @cancel="onCancel">
     <a-form-model layout="vertical">
       <a-tabs v-model="activeTab" tab-position="left" @change="onActiveTabChange">
         <a-tab-pane key="theme" :tab="$t('Theme')">

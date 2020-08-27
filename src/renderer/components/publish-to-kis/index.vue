@@ -4,7 +4,7 @@
       发布
     </a-button>
 
-    <a-modal :visible="visible" title="发布到 Kis" style="top: 5%;" width="600px" @cancel="onCancel">
+    <a-modal :visible="visible" centered title="发布到 Kis" style="top: 5%;" width="600px" @cancel="onCancel">
       <a-form-model layout="vertical">
         <a-form-model-item label="路径">
           <a-input v-model="formData.pathname" />

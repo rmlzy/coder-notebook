@@ -3,6 +3,7 @@
     <a-icon type="plus" @click="showDialog" />
 
     <a-modal
+      centered
       :title="$t('CreateNotebook')"
       :visible.sync="visible"
       :ok-text="$t('Ok')"

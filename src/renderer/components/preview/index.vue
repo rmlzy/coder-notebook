@@ -2,9 +2,9 @@
   <div class="preview">
     <div class="preview__title">{{ title }}</div>
     <div v-if="type === 'MARKDOWN'" class="markdown-body" v-html="html"></div>
-    <div v-if="type === 'RICH_TEXT'" class="ql-editor" v-html="html"></div>
+    <div v-if="type === 'RICH_TEXT'" style="height: calc(100vh - 104px);" class="ql-editor" v-html="html"></div>
 
-    <a-modal v-model="codeVisible" :title="codeTitle">
+    <a-modal v-model="codeVisible" centered :title="codeTitle">
       <p>{{ codeContent }}</p>
       <template slot="footer">
         <a-button type="primary" @click="closeCodeModal">{{ $t("Ok") }}</a-button>
