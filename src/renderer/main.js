@@ -6,6 +6,9 @@ import vClickOutside from "v-click-outside";
 import VueQuillEditor from "vue-quill-editor";
 import "quill/dist/quill.core.css";
 
+import Vuetify from "vuetify";
+import "vuetify/dist/vuetify.min.css";
+
 import App from "./App";
 import router from "./router";
 import store from "./store";
@@ -16,6 +19,7 @@ if (!process.env.IS_WEB) {
   Vue.use(require("vue-electron"));
 }
 
+Vue.use(Vuetify);
 Vue.use(Antd);
 Vue.use(vClickOutside);
 Vue.use(VueQuillEditor);
