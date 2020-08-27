@@ -3,7 +3,7 @@
     <template v-if="currentNote">
       <template v-if="currentNotebookUuid === 'Trash'">
         <div class="right__bd">
-          <preview :title="currentNote.title" :html="html" />
+          <preview :title="currentNote.title" :type="currentNote.type" :html="html" />
         </div>
       </template>
       <template v-else>
@@ -59,7 +59,7 @@
           </template>
 
           <template v-if="mode === 'PREVIEW'">
-            <preview :title="currentNote.title" :html="html" />
+            <preview :title="currentNote.title" :type="currentNote.type" :html="html" />
           </template>
         </div>
       </template>
