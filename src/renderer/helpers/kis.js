@@ -17,7 +17,7 @@ export const blogToMeta = (blog) => {
 };
 
 export const syncAllBlogs = async ({ host, token, notebookName }) => {
-  const listRes = await $.ajax(`${host}/api/v1/blogs`, {
+  const listRes = await $.ajax(`${host}/api/v1/blog`, {
     type: "GET",
     headers: { token },
   });
@@ -74,7 +74,7 @@ export const deleteBlog = async (options) => {
 
 export const getCategories = async (options) => {
   const { host, token } = options;
-  const res = await $.ajax(`${host}/api/v1/categories`, {
+  const res = await $.ajax(`${host}/api/v1/category`, {
     type: "GET",
     headers: { token },
   });
@@ -87,7 +87,7 @@ export const getCategories = async (options) => {
 
 export const getTags = async (options) => {
   const { host, token } = options;
-  const res = await $.ajax(`${host}/api/v1/tags`, {
+  const res = await $.ajax(`${host}/api/v1/tag`, {
     type: "GET",
     headers: { token },
   });
