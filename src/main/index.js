@@ -68,7 +68,7 @@ function createWindow() {
         {
           label: "Learn More",
           click() {
-            shell.openExternal("https://github.com/rmlzy/coder-notebook");
+            shell.openExternal("https://github.com/rmlzy/kis-desktop");
           },
         },
       ],

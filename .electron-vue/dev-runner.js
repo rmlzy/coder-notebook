@@ -158,8 +158,8 @@ function greeting() {
   const cols = process.stdout.columns;
   let text = "";
 
-  if (cols > 104) text = "coder-notebook";
-  else if (cols > 76) text = "coder-notebook";
+  if (cols > 104) text = "kis-desktop";
+  else if (cols > 76) text = "kis-desktop";
   else text = false;
 
   if (text) {
@@ -168,7 +168,7 @@ function greeting() {
       font: "simple3d",
       space: false,
     });
-  } else console.log(chalk.yellow.bold("\n  coder-notebook"));
+  } else console.log(chalk.yellow.bold("\n  kis-desktop"));
   console.log(chalk.blue("  getting ready...") + "\n");
 }
 
