@@ -1,8 +1,8 @@
 {
-  "name": "coder-notebook",
+  "name": "kis-desktop",
   "version": "1.0.6",
   "author": "rmlzy <rmlzy@outlook.com>",
-  "description": "A Notebook App for Coder",
+  "description": "Desktop Client for Kis",
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
@@ -20,8 +20,8 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "build": {
-    "productName": "Coder Notebook",
-    "appId": "com.example.coder-notebook",
+    "productName": "Kis Desktop",
+    "appId": "com.example.kis-desktop",
     "directories": {
       "output": "build"
     },
@@ -44,7 +44,7 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns",
+      "icon": "build/icons/icon.png",
       "target": [
         "dmg"
       ]
