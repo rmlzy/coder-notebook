@@ -13,17 +13,16 @@
           </a-form-model-item>
           <a-form-model-item :label="$t('Language')">
             <a-select v-model="formData.language">
-              <a-select-option v-for="item in languageList" :key="item.value" :value="item.value">
+              <a-select-option v-for="item in enums.languageList" :key="item.value" :value="item.value">
                 {{ item.label }}
               </a-select-option>
             </a-select>
           </a-form-model-item>
-
           <a-row :gutter="16">
             <a-col :span="12">
               <a-form-model-item :label="$t('Theme')">
                 <a-select v-model="formData.theme" @change="onChangeTheme">
-                  <a-select-option v-for="item in themeList" :key="item.value" :value="item.value">
+                  <a-select-option v-for="item in enums.themeList" :key="item.value" :value="item.value">
                     {{ item.label }}
                   </a-select-option>
                 </a-select>
@@ -32,7 +31,7 @@
             <a-col :span="12" v-if="formData.theme === 'light'">
               <a-form-model-item :label="$t('BackgroundImage')">
                 <a-select v-model="formData.bg">
-                  <a-select-option v-for="item in lightBgList" :key="item.value" :value="item.value">
+                  <a-select-option v-for="item in enums.lightBgList" :key="item.value" :value="item.value">
                     {{ item.label }}
                   </a-select-option>
                 </a-select>
@@ -41,7 +40,7 @@
             <a-col :span="12" v-if="formData.theme === 'dark'">
               <a-form-model-item :label="$t('BackgroundImage')">
                 <a-select v-model="formData.bg">
-                  <a-select-option v-for="item in darkBgList" :key="item.value" :value="item.value">
+                  <a-select-option v-for="item in enums.darkBgList" :key="item.value" :value="item.value">
                     {{ item.label }}
                   </a-select-option>
                 </a-select>
@@ -49,12 +48,15 @@
             </a-col>
           </a-row>
         </a-tab-pane>
-        <a-tab-pane key="kis" tab="Kis">
+        <a-tab-pane key="kis" tab="连接配置">
           <a-form-model-item label="域名">
-            <a-input v-model="formData.kis.host" />
+            <a-input v-model="formData.kis.host" placeholder="请填写域名" />
           </a-form-model-item>
-          <a-form-model-item label="Token">
-            <a-input v-model="formData.kis.token" />
+          <a-form-model-item label="邮箱">
+            <a-input v-model="formData.kis.email" placeholder="请填写邮箱" />
+          </a-form-model-item>
+          <a-form-model-item label="密码">
+            <a-input type="password" v-model="formData.kis.password" placeholder="请填写密码" />
           </a-form-model-item>
           <a-form-model-item label="文件夹名称">
             <a-input v-model="formData.kis.notebookName" placeholder="Kis 所有的文章将被同步到此文件夹下" />
@@ -81,6 +83,7 @@ import { mapState } from "vuex";
 import i18n from "@/i18n";
 import { setFullConfig, showInFinder, moveDataFolder } from "@/helpers/util";
 import { syncAllBlogs } from "@/helpers/kis";
+import { languageList, lightBgList, darkBgList } from "./const";
 
 export default {
   name: "setting",
@@ -88,40 +91,28 @@ export default {
   data() {
     return {
       activeTab: "theme",
-      themeList: [
-        { label: this.$t("LightTheme"), value: "light" },
-        { label: this.$t("DarkTheme"), value: "dark" },
-      ],
-      languageList: [
-        { label: "简体中文", value: "zh-CN" },
-        { label: "繁體中文", value: "zh-TW" },
-        { label: "English", value: "en-US" },
-        { label: "日本語", value: "ja" },
-        { label: "한국어", value: "ko" },
-      ],
-      lightBgList: [
-        { label: "不设定", value: "" },
-        { label: "祥云", value: "light-bg1" },
-        { label: "石灰石", value: "light-bg2" },
-        { label: "石板", value: "light-bg3" },
-        { label: "条纹", value: "light-bg4" },
-        { label: "鸟", value: "light-bg5" },
-        { label: "等高线", value: "light-bg6" },
-        { label: "粗糙", value: "light-bg7" },
-        { label: "三角形", value: "light-bg8" },
-      ],
-      darkBgList: [
-        { label: "不设定", value: "" },
-        { label: "方块", value: "dark-bg1" },
-        { label: "机器人", value: "dark-bg2" },
-        { label: "亚麻", value: "dark-bg3" },
-        { label: "黑曼巴", value: "dark-bg4" },
-        { label: "旧衬衫", value: "dark-bg5" },
-        { label: "台球桌", value: "dark-bg6" },
-        { label: "十字", value: "dark-bg7" },
-      ],
+      enums: {
+        themeList: [
+          { label: this.$t("LightTheme"), value: "light" },
+          { label: this.$t("DarkTheme"), value: "dark" },
+        ],
+        languageList,
+        lightBgList,
+        darkBgList,
+      },
       formData: {
-        kis: {},
+        name: "",
+        dataPath: "",
+        language: "",
+        theme: "",
+        bg: "",
+        kis: {
+          host: "",
+          email: "",
+          password: "",
+          token: "",
+          notebookName: "",
+        },
       },
       kisIsValid: false,
       kisSyncLoading: false,
@@ -182,8 +173,53 @@ export default {
       await this.$emit("ok", null);
     },
 
+    async getCaptcha() {
+      let captcha = "";
+      try {
+        const { host } = this.formData.kis;
+        const res = await $.ajax(`${host}/api/v1/captcha`, { type: "GET" });
+        if (res.success) {
+          captcha = res.debug;
+        }
+      } catch (e) {
+        // pass
+      }
+      return captcha;
+    },
+
+    async getToken({ email, password, captcha }) {
+      let token = "";
+      try {
+        const { host } = this.formData.kis;
+        const res = await $.ajax(`${host}/api/v1/login`, {
+          type: "POST",
+          data: { email, password, captcha },
+        });
+        if (res.success) {
+          token = res.data;
+        }
+      } catch (e) {
+        // pass
+      }
+      return token;
+    },
+
     async testKisConnect() {
-      const { host, token, notebookName } = this.formData.kis;
+      const { host, email, password, notebookName } = this.formData.kis;
+      if (!host) {
+        this.$message.warning("请填写域名");
+        return;
+      }
+      if (!email) {
+        this.$message.warning("请填写邮箱");
+        return;
+      }
+      if (!password) {
+        this.$message.warning("请填写密码");
+        return;
+      }
+      const captcha = await this.getCaptcha();
+      const token = await this.getToken({ email, password, captcha });
       const res = await $.ajax(`${host}/api/v1/check-token`, {
         type: "POST",
         data: { token },
@@ -194,7 +230,7 @@ export default {
       }
       this.kisIsValid = true;
       this.$confirm({
-        title: "Token 校验成功?",
+        title: "Token 校验成功!",
         content: `是否将 kis 所有的文章同步到 ${notebookName}?`,
         okText: this.$t("Ok"),
         cancelText: this.$t("Cancel"),

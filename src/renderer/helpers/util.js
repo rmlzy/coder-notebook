@@ -115,9 +115,10 @@ export const init = async () => {
     middleWidth: "200px",
     kis: {
       host: "",
-      username: "",
+      email: "",
       password: "",
       token: "",
+      notebookName: "",
     },
   });
   const appPath = getAppPathSync();
