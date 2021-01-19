@@ -55,7 +55,7 @@ export const md2html = (notebookUuid, noteUuid, mdText) => {
 
 export const getConfigPathSync = () => {
   const docPath = remote.app.getPath("documents");
-  return path.join(docPath, ".coder-notebook-config.json");
+  return path.join(docPath, ".kis-desktop.json");
 };
 
 export const getAppPathSync = () => {
@@ -107,7 +107,7 @@ export const init = async () => {
   await fs.outputJson(configPath, {
     name: pkg.name,
     version: pkg.version,
-    dataPath: `${docPath}/CODER_NOTEBOOK`,
+    dataPath: `${docPath}/KIS_DESKTOP`,
     bg: "light-bg1",
     theme: "light",
     language: "zh-CN",

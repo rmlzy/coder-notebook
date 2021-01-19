@@ -228,6 +228,7 @@ export default {
         this.$message.error(res.message);
         return;
       }
+      this.formData.kis.token = token;
       this.kisIsValid = true;
       this.$confirm({
         title: "Token 校验成功!",
